@@ -1,0 +1,9 @@
+{
+	"name": "adeptus-terra",
+	"description": "Warhammer 40K themed agent suite for specialized development tasks",
+	"version": "0.1.0",
+	"author": {
+		"name": "Jurriën Dokter",
+		"email": "jurrien@letstalk.nl"
+	}
+}

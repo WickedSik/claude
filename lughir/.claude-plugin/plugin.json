@@ -1,0 +1,9 @@
+{
+	"name": "lughir",
+	"description": "Combined features and tools used by me",
+	"version": "1.0.0",
+	"author": {
+		"name": "Jurriën Dokter",
+		"email": "jurrien@letstalk.nl"
+	}
+}
