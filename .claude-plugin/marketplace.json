@@ -1,7 +1,8 @@
 {
-	"name": "local-marketplace",
+	"name": "wickedsik",
 	"owner": {
-		"name": "Jurriën Dokter"
+		"name": "Jurriën Dokter",
+		"email": "jurriendokter@gmail.com"
 	},
 	"plugins": [
 		{

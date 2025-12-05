@@ -2,7 +2,7 @@
 description: Create a task file from a JIRA issue with acceptance criteria, tests, and code state analysis
 args:
   - name: issue_key
-    description: JIRA issue key (e.g., MMINT-497, SCRM-481)
+    description: JIRA issue key (e.g., PROJ-123, TASK-456)
     required: true
 ---
 
@@ -44,7 +44,7 @@ Scan ALL comments for manual test plans created by testers:
 ## 4. Code State Verification (Quick Reconnaissance)
 
 Perform rapid file search to identify related code:
-- Use `Grep` to search for issue key (e.g., `MMINT-497`) in code comments
+- Use `Grep` to search for issue key (e.g., `PROJ-123`) in code comments
 - Search for key terms from the issue summary (extract 2-3 main keywords)
 - Look in common locations:
   - `src/Core/` for business logic
@@ -168,7 +168,7 @@ After generating the task file:
 
 ## Example Task File
 
-See `.claude/tasks/MMINT-497-product-visibility-control.md` for a complete example of a properly generated task file.
+See `.claude/tasks/PROJ-123-example-feature.md` for a complete example of a properly generated task file.
 
 This example demonstrates:
 - ✓ Proper markdown formatting with 2-space newlines in the header section

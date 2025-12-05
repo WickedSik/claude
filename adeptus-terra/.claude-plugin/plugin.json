@@ -1,9 +1,17 @@
 {
 	"name": "adeptus-terra",
 	"description": "Warhammer 40K themed agent suite for specialized development tasks",
-	"version": "0.1.0",
+	"version": "0.1.1",
 	"author": {
 		"name": "Jurriën Dokter",
 		"email": "jurrien@letstalk.nl"
-	}
+	},
+	"keywords": [
+		"40k",
+		"warhammer",
+		"architecture",
+		"themed",
+		"governance",
+		"specialist-agents"
+	]
 }

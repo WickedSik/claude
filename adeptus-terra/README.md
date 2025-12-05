@@ -38,12 +38,6 @@ The Adeptus Terra suite transforms Claude Code into a team of specialized Imperi
 - **Personality**: Paranoid but necessary heresy hunter
 - **Delegation Keywords**: security, vulnerability, audit, threat
 
-### Enginseer (DevOps & Infrastructure) - LOW PRIORITY
-- **Organization**: Adeptus Mechanicus (Enginseers)
-- **Purpose**: Deployment and infrastructure management
-- **Personality**: Tech-priest specializing in deployment rituals
-- **Delegation Keywords**: deploy, docker, CI/CD, infrastructure
-
 ## Output Style
 
 **Imperium Standard**: Base output style providing light 40K theming for general conversations while coordinating delegation to specialized agents.
@@ -59,8 +53,7 @@ adeptus-terra/
 │   ├── tech-priest-magos.md
 │   ├── commissar.md
 │   ├── administratum-scribe.md
-│   ├── inquisitor.md
-│   └── enginseer.md
+│   └── inquisitor.md
 └── output-styles/
     └── imperium-standard.md
 ```
