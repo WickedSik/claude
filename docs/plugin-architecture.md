@@ -1,7 +1,10 @@
-# Claude Code Plugin Architecture Reference
+---
+title      : Claude Code Plugin Architecture Reference
+description: Quick reference for building Claude Code marketplace plugins
+last_update: 2025-12-11
+---
 
-**Last Updated**: 2025-12-04
-**Purpose**: Quick reference for building Claude Code marketplace plugins
+# Claude Code Plugin Architecture Reference
 
 ## Plugin Components
 
@@ -42,6 +45,10 @@ Your custom instructions for this agent's personality and behavior.
 - Clear, non-overlapping functional boundaries
 - Embed trigger keywords in description
 - Model selection: Sonnet for complex reasoning, Haiku for structured tasks
+- **Tool selection**: Thoughtfully select minimal toolsets matching agent responsibilities
+  - Grant only tools needed for the agent's specific role
+  - Examples: Edit for code-modifying agents, Bash for security scanners, Write for documentation generators
+  - Avoid granting all tools unless necessary
 
 ---
 
@@ -62,16 +69,39 @@ keep-coding-instructions: true  # Optional, preserves code-focused instructions
 Your modified instructions for main Claude conversation.
 ```
 
-**Critical Limitations**:
-- **CANNOT delegate to agents** - only affects system prompt
-- **CANNOT coordinate components** - pure prompt modification
-- **Scope**: Main conversation only, not agent contexts
+**Scope**: Main conversation only, not agent contexts
 
-**Use Cases**:
+**Typical Use Cases**:
 - Overall communication tone
 - Light thematic flavoring
 - General guidance and principles
-- NOT for task routing or specialization
+- NOT typically used for task routing or specialization
+
+**Important Clarification - Delegation Capability**:
+
+Output styles **CAN technically delegate** to agents via the Task tool in the system prompt, despite common documentation suggesting otherwise. This is a **design preference**, not a technical limitation.
+
+**Trade-offs of output style delegation**:
+
+*Drawbacks*:
+- Creates tight coupling between output style and agents
+- Centralized coordination logic can be harder to maintain
+- Single point of failure if output style is disabled
+- Goes against separation of concerns principle
+
+*Advantages*:
+- **Deterministic delegation**: Known community issue - agents often fail to auto-delegate unless explicitly mentioned by users
+- **Reliable coordination**: AI-driven delegation proves unreliable in practice for plugin agents
+- **Continuous immersion**: Themed suites can maintain experience throughout workflow
+- **Explicit control**: Predictable behavior instead of hoping AI recognizes keywords
+
+**When delegation is appropriate**:
+- Themed suites requiring continuous immersion in main conversation
+- Explicit coordination of multiple specialists needed
+- User experience depends on theatrical presentation of agent work
+- **AI-driven delegation proves unreliable** (common community experience)
+
+**Proven working example**: `adeptus-terra/output-styles/imperium-standard.md` successfully coordinates specialist agents via explicit Task tool invocations in system prompt, providing continuous 40K immersion while delegating to functional agents.
 
 **Activation**: User selects via `/output-style` command or settings.json
 
@@ -259,21 +289,213 @@ plugin-root/
 
 ---
 
+## Advanced Feature: Agent-Output Style Coordination
+
+**Optional Pattern**: Agents can produce structured output that output styles parse and present with thematic enhancement.
+
+**Discovery Note**: This pattern was validated during development of the `adeptus-terra` plugin. Initial implementation proved that output styles CAN delegate via Task tool invocations in system prompts, contradicting common documentation. See `.claude/tasks/imperium-standard-output-style.md` for implementation details and architectural discoveries.
+
+**Why this matters**: The community actively experiences issues with agents not being automatically delegated unless explicitly mentioned by users. AI-driven delegation (via agent descriptions alone) proves unreliable in practice. Output style delegation provides deterministic coordination when automatic delegation fails.
+
+### How This Works
+
+**The Coordination Flow**:
+```
+User requests analysis
+    ↓
+Output style delegates to specialist agent
+    ↓
+Agent performs analysis, produces structured assessment
+    ↓
+Agent returns to main conversation
+    ↓
+Output style parses structured block, presents dramatically
+```
+
+### Why Use This Pattern
+
+**Benefits**:
+- **Quantified metrics**: Agents provide objective scores (e.g., "Purity: 68/100")
+- **Consistent assessment**: Standardized format across all analyses
+- **Theatrical presentation**: Output style adds thematic framing without compromising technical accuracy
+- **Separation of concerns**: Agent focuses on analysis, output style handles presentation
+- **Tracking over time**: Numeric scores enable progress measurement
+
+**When to use**:
+- Building themed development suites (e.g., 40K, fantasy, sci-fi)
+- Want dramatic presentation of technical findings
+- Need quantified quality/security/architecture metrics
+- Multiple specialist agents with similar output needs
+
+**When NOT to use**:
+- Pure function-focused agents without theming
+- Simple code review without dramatic presentation
+- Agents that don't produce assessments (e.g., documentation generators)
+
+### Implementation Example
+
+**Agent Output** (tech-priest-magos.md):
+```markdown
+## Machine Spirit Status Assessment
+
+**CRITICAL**: Conclude EVERY code review with this structured assessment.
+
+### Assessment Format
+
+Always end analysis with:
+
+```
+═══════════════════════════════════════════
+⚙ MACHINE SPIRIT STATUS ASSESSMENT ⚙
+═══════════════════════════════════════════
+Purity Rating: [X]/100
+Corruption Detected: [Y] instances
+Tech-Heresy Level: [LEVEL]
+═══════════════════════════════════════════
+```
+
+### Scoring Guidelines
+
+**Purity Rating Calculation (0-100)**:
+- Start at 100, deduct points for issues:
+  - Critical issues (-15 each): Security vulnerabilities, data integrity risks
+  - High priority (-10 each): SOLID violations, tight coupling, missing tests
+  - Medium priority (-5 each): Code smells, duplicate code
+  - Low priority (-2 each): Style issues, TODOs
+
+**Tech-Heresy Level**:
+- NONE: No serious violations
+- MINOR: Small SOLID violations, simple code smells
+- MODERATE: Multiple pattern violations, missing tests
+- SEVERE: Security issues, major architectural violations
+- CRITICAL: Data integrity risks, system-wide failure
+
+### Integration Notes
+
+The output style will parse this assessment block and present it
+dramatically. This enables:
+- Quantified code quality metrics
+- Consistent assessment across reviews
+- Theatrical presentation by output style
+- Tracking improvements over time
+```
+
+**Output Style Presentation** (imperium-standard.md):
+```markdown
+## Presenting Specialist Reports
+
+When Tech-Priest Magos provides Machine Spirit assessment:
+
+**Parse the block and present based on Purity Rating**:
+
+- **90-100 (Blessed)**:
+  - "My lord, the Tech-Priest Magos reports the Machine Spirit is PLEASED."
+  - "Purity Rating: 92/100 - blessed code, minimal corruption."
+
+- **50-74 (Corrupted)**:
+  - "My lord, the Tech-Priest Magos reports CORRUPTION has taken root."
+  - "Purity Rating: 68/100 - the Machine Spirit is TROUBLED."
+  - "12 instances of corruption detected. Sanctification rituals REQUIRED."
+
+- **0-24 (Abomination)**:
+  - "By the Throne! The Tech-Priest Magos reports an ABOMINATION!"
+  - "Purity Rating: 18/100 - the Machine Spirit is in ANGUISH."
+```
+
+### Real-World Examples
+
+**Example 1: Security Assessment**
+```
+Agent produces:
+═══════════════════════════════════════════
+🛡 SECURITY THREAT ASSESSMENT 🛡
+═══════════════════════════════════════════
+Threat Level: ELEVATED
+Vulnerabilities: 7 identified
+Risk Rating: 42/100
+Critical Flaws: 2
+═══════════════════════════════════════════
+
+Output style presents:
+"My lord, the Inquisitor reports HERESY DETECTED! Risk Rating: 42/100.
+7 vulnerabilities identified, including 2 CRITICAL flaws. Immediate
+purging required."
+```
+
+**Example 2: Architecture Analysis**
+```
+Agent produces:
+═══════════════════════════════════════════
+⚜ ARCHITECTURAL GOVERNANCE ASSESSMENT ⚜
+═══════════════════════════════════════════
+Structural Integrity: 62/100
+Dependency Conflicts: 8 detected
+Governance Level: STRAINED
+Technical Debt: SIGNIFICANT
+═══════════════════════════════════════════
+
+Output style presents:
+"My lord, Sister Famulous reports STRAINED architectural relations.
+Structural Integrity: 62/100. 8 dependency conflicts threaten stability.
+Diplomatic mediation recommended."
+```
+
+### Design Considerations
+
+**Keep Agent Output Parseable**:
+- Use consistent formatting (ASCII borders, specific line patterns)
+- Include all metrics in predictable locations
+- Document the exact format in agent instructions
+- Provide scoring methodology in agent
+
+**Output Style Responsibilities**:
+- Parse the structured block (look for border patterns, extract metrics)
+- Add thematic framing based on severity levels
+- Preserve technical accuracy - never alter agent's findings
+- Present highlights, user can read full agent output in context
+
+**Maintain Separation**:
+- Agent: Technical analysis + structured metrics
+- Output style: Theatrical presentation + framing
+- Never let theming obscure technical precision
+
+### Alternative Approaches
+
+If you don't need coordination:
+
+**Simple Agent Output**: Just provide analysis without structured blocks
+**Simple Output Style**: Just provide tone without parsing agent output
+**Hybrid**: Agent provides structured output, but output style doesn't parse it (metrics still useful for user)
+
+This pattern is **optional**. Many excellent agent suites work perfectly well without this coordination.
+
+---
+
 ## Common Pitfalls
 
-### ❌ DON'T: Use output styles for delegation
+### ⚠️ TRADE-OFF: Output style delegation vs AI-driven delegation
 ```markdown
-# In output-style - WRONG
-When user asks about architecture, use the sister-famulous agent...
-```
-**Why**: Output styles cannot trigger delegation. Claude makes that decision.
+# Option A: Output style delegation (explicit)
+When user asks about architecture, use Task tool to invoke sister-famulous agent...
 
-### ✅ DO: Let agent descriptions drive delegation
-```markdown
-# In agent frontmatter - CORRECT
+# Option B: Agent description delegation (AI-driven)
 description: |
   Use PROACTIVELY for architecture decisions...
 ```
+
+**Option A (Output style delegation)**:
+- ✅ Deterministic, reliable coordination
+- ✅ Solves community issue of agents not auto-delegating
+- ❌ Tight coupling, harder maintenance
+- **Use when**: Themed suites, unreliable auto-delegation, explicit control needed
+
+**Option B (AI-driven delegation)**:
+- ✅ Separation of concerns, easier maintenance
+- ✅ Follows conventional pattern
+- ❌ Known community issue: agents often fail to auto-delegate
+- **Use when**: Pure functional agents, auto-delegation works reliably
+
+See "Advanced Feature: Agent-Output Style Coordination" section for implementation details.
 
 ### ❌ DON'T: Create overlapping agent responsibilities
 ```markdown
