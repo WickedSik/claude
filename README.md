@@ -32,8 +32,6 @@ Personal development workflow tools including JIRA integration, conversation arc
 - `literary-mentor` - Warm writing workshop instructor providing honest craft feedback
 - `tsundere` - Evolving AI personality with relationship phases
 
-**Documentation:** See [CLAUDE.md](.claude/CLAUDE.md) for detailed usage and architecture notes.
-
 ### adeptus-terra
 
 Warhammer 40K themed agent suite for specialized development tasks with Imperial coordinator and specialist advisors.
