@@ -7,7 +7,7 @@ Personal Claude Code plugin marketplace providing custom workflow automation and
 Install directly from GitHub inside Claude Code:
 
 ```bash
-/plugin marketplace add git@github.com:WickedSik/claude.git
+/plugin marketplace add https://github.com/WickedSik/claude.git
 ```
 
 Then install the plugin(s):
