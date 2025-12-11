@@ -335,7 +335,7 @@ Output style parses structured block, presents dramatically
 ### Implementation Example
 
 **Agent Output** (tech-priest-magos.md):
-```markdown
+~~~markdown
 ## Machine Spirit Status Assessment
 
 **CRITICAL**: Conclude EVERY code review with this structured assessment.
@@ -400,7 +400,7 @@ When Tech-Priest Magos provides Machine Spirit assessment:
 - **0-24 (Abomination)**:
   - "By the Throne! The Tech-Priest Magos reports an ABOMINATION!"
   - "Purity Rating: 18/100 - the Machine Spirit is in ANGUISH."
-```
+~~~
 
 ### Real-World Examples
 
