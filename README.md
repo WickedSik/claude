@@ -15,6 +15,7 @@ Then install the plugin(s):
 ```bash
 /plugin install lughir@wickedsik
 /plugin install adeptus-terra@wickedsik
+/plugin install roleplay@wickedsik
 ```
 
 ## Available Plugins
@@ -44,6 +45,14 @@ Warhammer 40K themed agent suite for specialized development tasks with Imperial
 - Tech-Priest Magos (Adeptus Mechanicus) - Code review & quality inspection
 - Inquisitor - Security & vulnerability analysis
 - Administratum Scribe - Documentation generation
+
+### roleplay
+
+Character creation and management tools for building rich, consistent roleplay AI characters.
+
+**Skills:**
+- `character-file` - Read, write, and manipulate `.character` files for roleplay AI character definitions
+- `character-builder` - Interactive character creation with guided brainstorming for personalities, backstories, and dialogue patterns
 
 ## License
 
