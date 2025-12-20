@@ -43,12 +43,46 @@ Standard sections include:
 - `Example dialogs` - Sample conversations between character and user
 - `First message` - Opening message to start the roleplay
 - `System Prompt` - LLM instructions for roleplay behavior
+- `Lorebook` - Context injection triggers based on conversation keywords (optional)
 
 **2. Template Variables**
 - `{{char}}` - Replaced with character name during roleplay
 - `{{user}}` - Replaced with user/player name during roleplay
 
-**3. Dialog Format (in Example dialogs section)**
+**3. Lorebook Format (optional)**
+
+The Lorebook section enables context-aware information injection based on keywords detected in conversation.
+
+**Entry Format:**
+```
+trigger_terms | description
+```
+
+**Structure:**
+- **Trigger terms**: Comma-separated keywords that activate this entry
+  - Case-insensitive (lowercase recommended for consistency)
+  - Partial matching: "fire" matches "firefighter", "fireball", etc.
+  - Recommended maximum: 10 terms per entry for maintainability
+- **Pipe delimiter**: ` | ` separates terms from description
+- **Description**: Free-form text that gets injected into the prompt when triggered
+  - Can span multiple sentences
+  - Provide context the LLM needs when terms are mentioned
+
+**Activation Behavior:**
+- Scans last 4 messages (2 user messages + 2 character messages)
+- If any trigger term is detected, the description is added to the prompt once
+- Multiple term matches in same entry = single insertion
+- Overlapping terms across entries are allowed (each entry triggers independently)
+- Lore entries do not trigger other lore entries (descriptions aren't scanned for keywords)
+
+**Example Entries:**
+```
+sword, blade, weapon | A well-crafted longsword with an intricate hilt forged by master blacksmiths of the kingdom.
+tavern, inn, ale house | The Rusty Nail is a popular gathering spot for mercenaries. Known for strong ale and occasional brawls.
+gar, republic, galactic republic | The Galactic Republic was a democratic federal union spread across light-years of space, governed by the Galactic Senate on Coruscant.
+```
+
+**4. Dialog Format (in Example dialogs section)**
 ```
 #{{user}}: *action in asterisks* "speech in quotes"
 #{{char}}: *Esmeralda nods slowly.* "I understand, thank you."
@@ -58,7 +92,7 @@ Standard sections include:
 - Actions/narration enclosed in asterisks: `*sits down*`
 - Speech enclosed in quotes: `"Hello there"`
 
-**4. Content Structure**
+**5. Content Structure**
 - Content within sections is **free-form** and passed directly to the LLM
 - The `Personality` section often uses structured labels for readability:
   - `Scenario:`, `Appearance:`, `Likes:`, `Dislikes:`, `Personality traits:`, etc.
@@ -72,11 +106,16 @@ Standard sections include:
 - Dialog lines must use `#{{user}}:` or `#{{char}}:` prefixes
 - Actions must be in asterisks: `*description*`
 - Speech must be in quotes: `"dialog"`
+- Lorebook entries must use pipe delimiter: `terms | description`
+- Lorebook entries must have at least one term and a description
 
 **Optional but recommended:**
 - Structured labels in Personality section for clarity
 - Blank lines between sections for readability
 - Consistent formatting within sections
+- Lorebook terms in lowercase for consistency
+- Maximum 10 terms per lorebook entry for maintainability
+- Intentional design when using overlapping terms across entries
 
 ## Capabilities
 
@@ -252,9 +291,13 @@ Validation Results for character.character:
 ✓ Section headers properly formatted
 ✓ Template variables used correctly
 ✓ Dialog format correct in Example dialogs
+✓ Lorebook entries use proper pipe delimiter format
 ⚠ Warning: No System Prompt section found (optional but recommended)
+⚠ Warning: Lorebook entry has 12 terms (recommend max 10 for maintainability)
+⚠ Warning: Uppercase terms detected in Lorebook (recommend lowercase)
+⚠ Warning: Overlapping terms found across lorebook entries (verify intentional)
 
-Status: VALID (1 warning)
+Status: VALID (4 warnings)
 ```
 
 ## Tool Usage Patterns
@@ -305,6 +348,13 @@ Use Grep to search for:
 - Dialog prefixes: pattern "^#{{(char|user)}}:"
 - Actions: pattern "\*[^*]+\*"
 - Speech: pattern '"[^"]+"'
+
+Lorebook-specific validation:
+- Entry format: pattern "^[^|]+ \| .+$" (terms | description)
+- Pipe delimiter: pattern " \| "
+- Term count: split on commas, count (warn if >10)
+- Case check: detect uppercase letters in terms section
+- Overlap detection: collect all terms across entries, identify duplicates
 ```
 
 ## Example Character File
@@ -340,6 +390,12 @@ Scene: {{char}} sits at a tavern table, cleaning her sword when {{user}} enters.
 --- // System Prompt
 
 You are {{char}}. You will never respond as/for {{user}}. Maintain consistent personality across all responses. Actions and thoughts go in asterisks. Speech goes in quotes. Be witty and direct in character voice.
+
+--- // Lorebook
+
+sword, blade, weapon | A well-crafted longsword with an intricate hilt forged by master blacksmiths of the kingdom. The blade is inscribed with ancient runes that glow faintly in moonlight.
+tavern, inn, rusty nail | The Rusty Nail is the most popular tavern in the merchant district. Known for strong ale, occasional brawls, and being a gathering spot for mercenaries and adventurers seeking work.
+kingdom, realm, crown | The Kingdom of Aldoria has stood for three centuries under the rule of House Blackwood. Recent tensions with neighboring realms have increased military presence in border towns.
 ```
 
 ## Operations Checklist
@@ -392,6 +448,14 @@ Before performing any operation, verify:
 - The Personality section's internal structure (Scenario:, Appearance:, etc.) is **conventional only**
 - Character files are plain text - can be edited with any text editor
 - Default character file location: `/Users/jurriendokter/Library/Application Support/HammerAI/RP-CHARS/`
+
+**Lorebook-specific notes:**
+- Lorebook activates by scanning last 4 messages (2 user + 2 character messages)
+- Partial matching: "fire" in terms will match "firefighter", "fireball", etc.
+- Case-insensitive matching (lowercase terms recommended for consistency)
+- Each entry triggers independently - overlapping terms across entries is allowed
+- Descriptions are inserted once per entry regardless of multiple term matches
+- Lore entries do not trigger other lore entries (descriptions not scanned for keywords)
 
 ## Integration with Character Building
 
