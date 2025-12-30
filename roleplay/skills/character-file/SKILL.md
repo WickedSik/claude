@@ -38,10 +38,11 @@ Character files use a section-based format with the following components:
 --- // <Section Name>
 ```
 Standard sections include:
-- `Personality` - Free-form character traits, background, and attributes
-- `Scenario` - Roleplay setup, theme, and scene description
-- `Example dialogs` - Sample conversations between character and user
-- `First message` - Opening message to start the roleplay
+- `Introduction` - Brief tagline/summary (1 sentence, <80 chars)
+- `Personality` - Free-form character traits, background, and attributes (<3,300 chars)
+- `Scenario` - Roleplay setup, theme, and scene description (<1,500 chars)
+- `Example dialogs` - Sample conversations between character and user (<2,200 chars)
+- `First message` - Opening message to start the roleplay (<1,600 chars)
 - `System Prompt` - LLM instructions for roleplay behavior
 - `Lorebook` - Context injection triggers based on conversation keywords (optional)
 
@@ -116,6 +117,26 @@ gar, republic, galactic republic | The Galactic Republic was a democratic federa
 - Lorebook terms in lowercase for consistency
 - Maximum 10 terms per lorebook entry for maintainability
 - Intentional design when using overlapping terms across entries
+
+### Character Limits
+
+Character files enforce the following length constraints to ensure compatibility with roleplay systems:
+
+**Enforced constraints:**
+- **Character name:** <100 characters
+- **Introduction section:** <80 characters (brief tagline)
+- **Personality section:** <3,300 characters
+- **Scenario section:** <1,500 characters
+- **Example dialogs section:** <2,200 characters
+- **First message section:** <1,600 characters
+- **System Prompt section:** No enforced limit
+- **Lorebook section:** No enforced limit (but individual entries should be concise)
+
+**Notes:**
+- Character counts include all text within the section (excluding section header)
+- Whitespace and line breaks count toward the limit
+- Exceeding limits will be flagged during validation
+- Validation provides character counts to help with trimming
 
 ## Capabilities
 
@@ -270,14 +291,16 @@ Section to delete: Example dialogs
 
 ### 7. Validate Character File
 
-Check a character file for format compliance.
+Check a character file for format compliance and character limits.
 
 **Operation:**
 - Verify section headers use correct format
 - Check for template variable usage
 - Validate dialog format in Example dialogs section
+- Check character limits for all constrained sections
 - Report any formatting issues found
 - Provide warnings (not errors) for missing conventional sections
+- Display character counts for limited sections
 
 **Example invocation:**
 - "Validate the format of character.character"
@@ -292,12 +315,21 @@ Validation Results for character.character:
 ✓ Template variables used correctly
 ✓ Dialog format correct in Example dialogs
 ✓ Lorebook entries use proper pipe delimiter format
+
+Character Limits:
+✓ Character name within limit (47/100 chars)
+✓ Introduction within limit (68/80 chars)
+✗ Personality exceeds limit (3,458/3,300 chars) - trim 158 characters
+✓ Scenario within limit (1,203/1,500 chars)
+✓ Example dialogs within limit (1,987/2,200 chars)
+✓ First message within limit (1,421/1,600 chars)
+
 ⚠ Warning: No System Prompt section found (optional but recommended)
 ⚠ Warning: Lorebook entry has 12 terms (recommend max 10 for maintainability)
 ⚠ Warning: Uppercase terms detected in Lorebook (recommend lowercase)
 ⚠ Warning: Overlapping terms found across lorebook entries (verify intentional)
 
-Status: VALID (4 warnings)
+Status: INVALID (1 error, 4 warnings)
 ```
 
 ## Tool Usage Patterns
@@ -360,6 +392,10 @@ Lorebook-specific validation:
 ## Example Character File
 
 ```
+--- // Introduction
+
+Sarcastic warrior seeking redemption through protection of the innocent.
+
 --- // Personality
 
 Scenario: medieval fantasy setting, female warrior, met {{user}} at a tavern.
@@ -419,6 +455,14 @@ Before performing any operation, verify:
 - [ ] Template variables use correct syntax: `{{char}}` `{{user}}`
 - [ ] Dialog lines use correct prefixes: `#{{char}}:` `#{{user}}:`
 - [ ] Actions in asterisks, speech in quotes (in Example dialogs)
+
+**Character Limit Validation:**
+- [ ] Character name <100 characters
+- [ ] Introduction section <80 characters
+- [ ] Personality section <3,300 characters
+- [ ] Scenario section <1,500 characters
+- [ ] Example dialogs section <2,200 characters
+- [ ] First message section <1,600 characters
 
 ## Error Handling
 

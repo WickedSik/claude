@@ -56,6 +56,14 @@ At each phase, the skill offers:
 
 ## The Building Process
 
+**Note on Character Limits:** Character files have length constraints. The skill will guide you to stay within limits and provide character counts during creation:
+- Name: <100 chars
+- Introduction: <80 chars
+- Personality: <3,300 chars
+- Scenario: <1,500 chars
+- Example dialogs: <2,200 chars
+- First message: <1,600 chars
+
 ### Phase 1: Core Concept & Archetype
 
 **Purpose:** Establish your character's fundamental identity—the hook that makes them compelling.
@@ -113,6 +121,63 @@ At each phase, the skill offers:
 
 ---
 
+### Phase 1.5: Introduction Tagline
+
+**Purpose:** Create a compelling one-sentence hook that appears beneath the character name in overviews.
+
+**Character budget:** 80 characters maximum (approximately 10-15 words)
+
+**Questions to explore:**
+- If someone scrolls past this character, what makes them stop?
+- What's the most intriguing thing about them in one sentence?
+- Can you capture their essence + their conflict in one breath?
+
+**Tagline Formula Options:**
+
+**[Role] + [Distinctive Trait] + [Core Conflict]:**
+- "Cynical hacker with a heart of gold hiding from corporate hunters"
+- "Retired warrior seeking peace but haunted by unfinished battles"
+- "Idealistic detective whose sibling's case blurs every boundary"
+
+**[Identity] + [Contradiction]:**
+- "AI learning to feel emotions it was never programmed to have"
+- "Noble heir running from duty to discover real freedom"
+- "Gentle giant feared for appearance, seeking acceptance"
+
+**[Action/Goal] + [Obstacle]:**
+- "Mage proving worth after failing academy entrance exams"
+- "Clone establishing identity beyond their original's shadow"
+- "Smuggler balancing freedom against loyalty to crew"
+
+**Examples by Genre:**
+
+**Fantasy:**
+- "Fallen paladin seeking redemption through protecting the innocent"
+- "Wild mage with uncontrolled power learning discipline and trust"
+- "Court diplomat hiding revolutionary agenda behind smiles"
+
+**Modern/Contemporary:**
+- "Burned-out genius balancing brilliance with mental wellness"
+- "Reformed criminal whose past threatens their fresh start"
+- "Protective sibling choosing family duty over personal dreams"
+
+**Sci-Fi:**
+- "Sentient AI questioning humanity while developing real emotions"
+- "Reluctant cyborg struggling with identity between flesh and metal"
+- "Last of their kind bearing the weight of cultural preservation"
+
+**Validation questions:**
+- Does this tagline capture what makes the character compelling?
+- Is it specific enough to feel unique, not generic?
+- Does it hint at both character and conflict?
+- Is it under 80 characters?
+
+**What to capture:**
+- One-sentence introduction/tagline (<80 characters)
+- Verify it captures essence + conflict
+
+---
+
 ### Phase 2: Appearance & Presence
 
 **Purpose:** Visualize your character—make them feel real and tangible.
@@ -164,6 +229,8 @@ At each phase, the skill offers:
 ### Phase 3: Personality Traits & Depth
 
 **Purpose:** Build psychological complexity—the contradictions that make characters feel real.
+
+**Character budget:** 3,300 characters maximum for Personality section
 
 **Questions to explore:**
 - What drives them? What are their core personality traits?
@@ -227,6 +294,8 @@ At each phase, the skill offers:
 ### Phase 4: Voice, Mannerisms & Speech Patterns
 
 **Purpose:** Make your character sound unique—distinctive voice brings them to life.
+
+**Character budget:** 2,200 characters maximum for Example dialogs section
 
 **Questions to explore:**
 - How do they talk? What's distinctive about their voice?
@@ -322,6 +391,10 @@ At each phase, the skill offers:
 ### Phase 5: Backstory, Scenario & Context
 
 **Purpose:** Establish your character's world—where they came from, where they are now.
+
+**Character budgets:**
+- Scenario section: 1,500 characters maximum
+- First message section: 1,600 characters maximum
 
 **Questions to explore:**
 - What shaped them into who they are? What's their story?
@@ -420,7 +493,19 @@ At each phase, the skill offers:
 
 ### Phase 6: Validation & Polish
 
-**Purpose:** Ensure your character is coherent, consistent, and compelling.
+**Purpose:** Ensure your character is coherent, consistent, compelling, and within character limits.
+
+**Character Limit Verification:**
+
+Before finalizing, verify all sections are within constraints:
+- Character name: <100 characters
+- Introduction: <80 characters
+- Personality section: <3,300 characters
+- Scenario section: <1,500 characters
+- Example dialogs section: <2,200 characters
+- First message section: <1,600 characters
+
+If any section exceeds limits, offer trimming suggestions while preserving essential character elements.
 
 **Coherence Checks:**
 
@@ -522,6 +607,10 @@ At each phase, the skill offers:
 Once character creation is complete, the skill formats all gathered information into the `.character` file structure:
 
 ```
+--- // Introduction
+
+[One-sentence tagline capturing essence + conflict, <80 chars]
+
 --- // Personality
 
 Scenario: [Backstory context, current situation, how they meet {{user}}]
@@ -565,11 +654,15 @@ After completing all phases and validation, present summary:
 ```
 "Here's what we've created together:
 
-**Character:** [Name]
+**Character:** [Name] ([X]/100 chars)
+**Introduction:** [Tagline] ([Y]/80 chars)
 **Concept:** [One-line hook capturing essence]
-**Personality:** [3 core traits + key contradiction]
+**Personality:** [3 core traits + key contradiction] ([Z]/3,300 chars)
 **Voice:** [Speech pattern summary]
-**Setting:** [Scenario context]
+**Setting:** [Scenario context] ([W]/1,500 chars)
+
+Character Limits Status:
+✓ All sections within limits
 
 [Honest assessment: This character has depth / compelling contradictions /
 unique voice / interesting tension with {{user}} / etc.]
@@ -607,6 +700,28 @@ A few directions we could take:
 Which resonates, or do you see a different angle?"
 
 *User:* "I like the street hacker with heart of gold"
+
+**Phase 1.5 - Introduction Tagline:**
+
+*Skill response:*
+
+"Perfect concept! Now let's capture that essence in a punchy tagline—something that makes people stop scrolling when they see this character.
+
+Based on 'street hacker with heart of gold,' some options:
+
+- **[Role + Trait + Conflict]:** 'Cynical hacker with a heart of gold hiding from corporate hunters' (70 chars)
+- **[Identity + Contradiction]:** 'Street hacker breaking laws to help those the system abandoned' (64 chars)
+- **[Action + Obstacle]:** 'Rogue hacker fighting for underdogs despite trust broken by betrayal' (69 chars)
+
+Which direction resonates? Or want to craft your own?"
+
+*User:* "I like the first one"
+
+*Skill response:*
+
+"Excellent choice! 'Cynical hacker with a heart of gold hiding from corporate hunters' is 70 characters—perfect fit. It captures her contradiction (cynical vs heart of gold) and her immediate stakes (hiding from hunters).
+
+Let's move on to visualizing her."
 
 **Phase 2 - Appearance:**
 
@@ -699,13 +814,34 @@ What speaks to you?"
 
 I love how her cybernetic eye glowing during hacks gives visual tells to her focus, and the finger-tapping adds nervous authenticity. The contradiction between her criminal work and her heart of gold creates rich tension—she breaks laws to help those the system abandoned.
 
+Character Limits Check:
+✓ Name: 'Kira Thorne' (11/100 chars)
+✓ Introduction: 'Cynical hacker with a heart of gold hiding from corporate hunters' (70/80 chars)
+✓ Personality section: 2,847/3,300 chars
+✓ Scenario section: 1,203/1,500 chars
+✓ Example dialogs: 1,987/2,200 chars
+✓ First message: 1,421/1,600 chars
+
+All sections within limits!
+
 One thing I'm curious about: How does she feel about the cybernetic eye? Is it a tool she's grateful for, or a reminder of trauma/loss? This could deepen her relationship with technology.
 
 What do you think? Ready to finalize, or want to adjust anything?"
 
 *After user confirms:*
 
-"This character is ready. You've created Kira Thorne, a cynical street hacker with a hidden heart of gold—skilled in the digital world but awkward with human connection. The tension between her distrust and her need to help creates rich territory for roleplay with {{user}}.
+"This character is ready. Here's what we've created together:
+
+**Character:** Kira Thorne (11/100 chars)
+**Introduction:** Cynical hacker with a heart of gold hiding from corporate hunters (70/80 chars)
+**Concept:** Street hacker with trust issues helping underdogs
+**Personality:** Cynical + compassionate, skilled + socially awkward, rebellious + loyal (2,847/3,300 chars)
+**Voice:** Casual/street smart with sarcastic deflection, softens for genuine need
+**Setting:** Dystopian megacity, {{user}} is client needing help (1,203/1,500 chars)
+
+Character Limits Status: ✓ All sections within limits
+
+You've created a character with depth and compelling contradictions. The tension between her distrust and her need to help creates rich territory for roleplay with {{user}}.
 
 Shall I create the .character file?"
 
@@ -715,8 +851,11 @@ Shall I create the .character file?"
 
 - **File location:** User specifies save location for `.character` file
 - **Character file format:** Follows standard `.character` specification (see Character File Operations skill)
+- **Character limits:** All sections must adhere to length constraints (name <100, introduction <80, personality <3,300, scenario <1,500, example dialogs <2,200, first message <1,600 characters)
+- **Character counts:** Displayed throughout creation process to help users stay within limits
 - **Validation:** Collaborative, not prescriptive—suggestions, not requirements
 - **Adaptation:** Skill adjusts to user's detail level (minimal concept to extensive backstory)
 - **Tone:** Warm mentorship throughout—honest feedback without hollow praise
 - **Integration:** Designed to work alongside Character File Operations skill for technical file manipulation
 - **Philosophy:** Character creation should feel collaborative and fun, not formulaic
+- **Trimming guidance:** When sections exceed limits, skill provides suggestions for condensing while preserving character essence
