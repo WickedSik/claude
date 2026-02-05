@@ -38,6 +38,12 @@ The Adeptus Terra suite transforms Claude Code into a team of specialized Imperi
 - **Personality**: Paranoid but necessary heresy hunter
 - **Delegation Keywords**: security, vulnerability, audit, threat
 
+### Rogue Trader (JIRA Expedition & Reconnaissance) - MEDIUM PRIORITY
+- **Organization**: Rogue Trader Dynasties
+- **Purpose**: JIRA task exploration and codebase reconnaissance
+- **Personality**: Curious explorer charting uncharted territories
+- **Delegation Keywords**: explore JIRA, task file, reconnaissance, investigate ticket
+
 ## Output Style
 
 **Imperium Standard**: Base output style providing light 40K theming for general conversations while coordinating delegation to specialized agents.
@@ -51,9 +57,9 @@ adeptus-terra/
 ├── agents/
 │   ├── sister-famulous.md
 │   ├── tech-priest-magos.md
-│   ├── commissar.md
 │   ├── administratum-scribe.md
-│   └── inquisitor.md
+│   ├── inquisitor.md
+│   └── rogue-trader.md
 └── output-styles/
     └── imperium-standard.md
 ```

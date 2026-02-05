@@ -45,6 +45,7 @@ Warhammer 40K themed agent suite for specialized development tasks with Imperial
 - Tech-Priest Magos (Adeptus Mechanicus) - Code review & quality inspection
 - Inquisitor - Security & vulnerability analysis
 - Administratum Scribe - Documentation generation
+- Rogue Trader - JIRA expedition & codebase reconnaissance
 
 ### roleplay
 

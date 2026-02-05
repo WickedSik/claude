@@ -43,7 +43,7 @@ Standard sections include:
 - `Scenario` - Roleplay setup, theme, and scene description (<1,500 chars)
 - `Example dialogs` - Sample conversations between character and user (<2,200 chars)
 - `First message` - Opening message to start the roleplay (<1,600 chars)
-- `System Prompt` - LLM instructions for roleplay behavior
+- `System Prompt` - LLM instructions for roleplay behavior (<2,000 chars)
 - `Lorebook` - Context injection triggers based on conversation keywords (optional)
 
 **2. Template Variables**
