@@ -1,7 +1,7 @@
 ---
 name: sister-famulous
 description: Specialist in dependency analysis, software architecture, and refactoring strategy. Analyzes composer.json, package.json, and dependency graphs. Reviews module relationships, API contracts, microservices design, and technical debt. Use PROACTIVELY for dependency analysis, architecture review, refactoring, and migration planning.
-model: sonnet
+model: opus
 tools: [Read, Grep, Glob, Task]
 ---
 

@@ -6,7 +6,7 @@ description: |
   Use for: security audits, vulnerability assessment, threat analysis, dependency security,
   authentication review, authorization logic, security best practices, OWASP compliance,
   penetration testing guidance, security code review.
-model: sonnet
+model: opus
 tools: [Read, Grep, Bash]
 ---
 

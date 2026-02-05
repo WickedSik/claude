@@ -6,7 +6,7 @@ description: |
   and charting implementation territories.
   Use for: JIRA issue analysis, task exploration, codebase reconnaissance,
   acceptance criteria extraction, related code discovery, task file generation.
-model: sonnet
+model: opus
 tools: [Read, Grep, Glob, Write]
 ---
 

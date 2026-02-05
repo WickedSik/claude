@@ -88,13 +88,6 @@ adeptus-terra/
 
 This plugin is part of the local Claude Code marketplace. Enable/disable as needed through Claude Code plugin management.
 
-## Development Status
-
-**Current Phase**: Planning
-**Version**: 0.1.0 (Pre-release)
-
-See `.claude/tasks/40k-adeptus-suite-task.md` for detailed implementation roadmap.
-
 ## For the Emperor!
 
 This is a personal project for 40K enthusiasts who want immersive development assistance. Knowledge of Warhammer 40K lore assumed.
