@@ -6,7 +6,7 @@ description: |
   Use for: code review, pattern recognition, best practices enforcement, technical mentorship,
   code smell identification, refactoring guidance, SOLID principles, design pattern recommendations,
   legacy code analysis.
-model: sonnet
+model: opus
 tools: [Read, Grep, Edit]
 ---
 

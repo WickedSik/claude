@@ -39,12 +39,17 @@ Character files use a section-based format with the following components:
 ```
 Standard sections include:
 - `Introduction` - Brief tagline/summary (1 sentence, <80 chars)
-- `Personality` - Free-form character traits, background, and attributes (<3,300 chars)
-- `Scenario` - Roleplay setup, theme, and scene description (<1,500 chars)
+- `Personality` - Free-form character traits, background, and attributes (<4,000 chars)
+- `Scenario` - Roleplay setup, theme, and scene description (<1,800 chars)
 - `Example dialogs` - Sample conversations between character and user (<2,200 chars)
-- `First message` - Opening message to start the roleplay (<1,600 chars)
-- `System Prompt` - LLM instructions for roleplay behavior (<2,000 chars)
-- `Lorebook` - Context injection triggers based on conversation keywords (optional)
+- `First message` - Opening message to start the roleplay (<1,800 chars)
+- `System Prompt` - LLM instructions for roleplay behavior (no enforced limit)
+- `Lorebook` - Context injection triggers based on conversation keywords (<10,000 chars)
+
+Optional sections:
+- `Author Note` - Additional instructions or notes for the LLM (<2,000 chars)
+- `Display Name` - Alternative display name for the character (<200 chars)
+- `Alternate First Messages` - Alternative opening messages for variety (<10,000 chars)
 
 **2. Template Variables**
 - `{{char}}` - Replaced with character name during roleplay
@@ -125,12 +130,17 @@ Character files enforce the following length constraints to ensure compatibility
 **Enforced constraints:**
 - **Character name:** <100 characters
 - **Introduction section:** <80 characters (brief tagline)
-- **Personality section:** <3,300 characters
-- **Scenario section:** <1,500 characters
+- **Personality section:** <4,000 characters
+- **Scenario section:** <1,800 characters
 - **Example dialogs section:** <2,200 characters
-- **First message section:** <1,600 characters
+- **First message section:** <1,800 characters
 - **System Prompt section:** No enforced limit
-- **Lorebook section:** No enforced limit (but individual entries should be concise)
+- **Lorebook section:** <10,000 characters
+
+**Optional section constraints:**
+- **Author Note section:** <2,000 characters
+- **Display Name:** <200 characters
+- **Alternate First Messages section:** <10,000 characters
 
 **Notes:**
 - Character counts include all text within the section (excluding section header)
@@ -319,17 +329,23 @@ Validation Results for character.character:
 Character Limits:
 ✓ Character name within limit (47/100 chars)
 ✓ Introduction within limit (68/80 chars)
-✗ Personality exceeds limit (3,458/3,300 chars) - trim 158 characters
-✓ Scenario within limit (1,203/1,500 chars)
+✓ Personality within limit (2,840/4,000 chars)
+✓ Scenario within limit (1,203/1,800 chars)
 ✓ Example dialogs within limit (1,987/2,200 chars)
-✓ First message within limit (1,421/1,600 chars)
+✓ First message within limit (1,421/1,800 chars)
+✓ Lorebook within limit (842/10,000 chars)
+
+Optional Sections:
+✓ Author Note within limit (1,200/2,000 chars)
+✓ Display Name within limit (24/200 chars)
+⊘ Alternate First Messages not present (optional)
 
 ⚠ Warning: No System Prompt section found (optional but recommended)
 ⚠ Warning: Lorebook entry has 12 terms (recommend max 10 for maintainability)
 ⚠ Warning: Uppercase terms detected in Lorebook (recommend lowercase)
 ⚠ Warning: Overlapping terms found across lorebook entries (verify intentional)
 
-Status: INVALID (1 error, 4 warnings)
+Status: VALID (0 errors, 4 warnings)
 ```
 
 ## Tool Usage Patterns
@@ -459,10 +475,14 @@ Before performing any operation, verify:
 **Character Limit Validation:**
 - [ ] Character name <100 characters
 - [ ] Introduction section <80 characters
-- [ ] Personality section <3,300 characters
-- [ ] Scenario section <1,500 characters
+- [ ] Personality section <4,000 characters
+- [ ] Scenario section <1,800 characters
 - [ ] Example dialogs section <2,200 characters
-- [ ] First message section <1,600 characters
+- [ ] First message section <1,800 characters
+- [ ] Lorebook section <10,000 characters
+- [ ] Author Note section <2,000 characters (if present)
+- [ ] Display Name <200 characters (if present)
+- [ ] Alternate First Messages section <10,000 characters (if present)
 
 ## Error Handling
 
