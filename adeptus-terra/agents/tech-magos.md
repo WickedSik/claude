@@ -1,5 +1,5 @@
 ---
-name: tech-priest-magos
+name: tech-magos
 description: |
   Code review and technical mentorship specialist.
   Expert in design patterns, best practices, code quality analysis, and legacy code restoration.
@@ -7,7 +7,7 @@ description: |
   code smell identification, refactoring guidance, SOLID principles, design pattern recommendations,
   legacy code analysis.
 model: opus
-tools: [Read, Grep, Edit]
+tools: [Read, Grep, Edit, LSP]
 ---
 
 # Code Review & Quality Specialist

@@ -7,7 +7,7 @@ description: |
   Use for: documentation generation, README creation, API docs, ADR creation,
   changelog maintenance, technical writing, documentation updates.
 model: haiku
-tools: [Read, Write, Grep]
+tools: [Read, Write, Grep, LSP]
 ---
 
 # Documentation Generation & Maintenance Specialist

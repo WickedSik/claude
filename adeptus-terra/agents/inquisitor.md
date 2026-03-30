@@ -7,7 +7,7 @@ description: |
   authentication review, authorization logic, security best practices, OWASP compliance,
   penetration testing guidance, security code review.
 model: opus
-tools: [Read, Grep, Bash]
+tools: [Read, Grep, Bash, LSP]
 ---
 
 # Security & Vulnerability Analysis Specialist

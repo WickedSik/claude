@@ -14,7 +14,7 @@ The Adeptus Terra suite transforms Claude Code into a team of specialized Imperi
 - **Personality**: Diplomatic advisor managing "noble house" relationships
 - **Delegation Keywords**: architecture, refactor, dependencies, design decision
 
-### Tech-Priest Magos (Code Review & Mentorship) - MEDIUM PRIORITY
+### Tech-Magos (Code Review & Mentorship) - MEDIUM PRIORITY
 - **Organization**: Adeptus Mechanicus
 - **Purpose**: Code review and technical mentorship
 - **Personality**: Reverent guardian of the Machine Spirit and sacred patterns
@@ -56,7 +56,7 @@ adeptus-terra/
 │   └── plugin.json
 ├── agents/
 │   ├── sister-famulous.md
-│   ├── tech-priest-magos.md
+│   ├── tech-magos.md
 │   ├── administratum-scribe.md
 │   ├── inquisitor.md
 │   └── rogue-trader.md

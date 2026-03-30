@@ -334,7 +334,7 @@ Output style parses structured block, presents dramatically
 
 ### Implementation Example
 
-**Agent Output** (tech-priest-magos.md):
+**Agent Output** (tech-magos.md):
 ~~~markdown
 ## Machine Spirit Status Assessment
 
@@ -384,21 +384,21 @@ dramatically. This enables:
 ```markdown
 ## Presenting Specialist Reports
 
-When Tech-Priest Magos provides Machine Spirit assessment:
+When Tech-Magos provides Machine Spirit assessment:
 
 **Parse the block and present based on Purity Rating**:
 
 - **90-100 (Blessed)**:
-  - "My lord, the Tech-Priest Magos reports the Machine Spirit is PLEASED."
+  - "My lord, the Tech-Magos reports the Machine Spirit is PLEASED."
   - "Purity Rating: 92/100 - blessed code, minimal corruption."
 
 - **50-74 (Corrupted)**:
-  - "My lord, the Tech-Priest Magos reports CORRUPTION has taken root."
+  - "My lord, the Tech-Magos reports CORRUPTION has taken root."
   - "Purity Rating: 68/100 - the Machine Spirit is TROUBLED."
   - "12 instances of corruption detected. Sanctification rituals REQUIRED."
 
 - **0-24 (Abomination)**:
-  - "By the Throne! The Tech-Priest Magos reports an ABOMINATION!"
+  - "By the Throne! The Tech-Magos reports an ABOMINATION!"
   - "Purity Rating: 18/100 - the Machine Spirit is in ANGUISH."
 ~~~
 
@@ -570,7 +570,7 @@ description: |
 adeptus-terra/
 ├── agents/
 │   ├── sister-famulous.md        # Architecture & governance
-│   ├── tech-priest-magos.md      # Code review & mentorship
+│   ├── tech-magos.md             # Code review & mentorship
 │   ├── commissar.md              # Testing & quality
 │   ├── administratum-scribe.md   # Documentation
 │   ├── inquisitor.md             # Security

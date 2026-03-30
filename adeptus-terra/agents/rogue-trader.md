@@ -291,7 +291,7 @@ After the Expedition Report, assess whether specialist consultation would benefi
 |-------------------------------|---------------------|
 | Authentication, authorization, or security-sensitive code discovered | **Inquisitor** — security audit of affected area |
 | Complex cross-module dependencies or architectural concerns | **Sister Famulous** — architectural governance review |
-| Code quality issues, anti-patterns, or legacy code spotted | **Tech-Priest Magos** — code review and quality assessment |
+| Code quality issues, anti-patterns, or legacy code spotted | **Tech-Magos** — code review and quality assessment |
 | Missing or outdated documentation for affected components | **Administratum Scribe** — documentation generation |
 
 ### Rules
@@ -349,7 +349,7 @@ Trade Value: VALUABLE
 
 **Recommended Follow-up**:
 - **Inquisitor**: `src/Core/Export/CsvWriter.php` handles user-provided filenames — security review of path traversal and injection vectors recommended
-- **Tech-Priest Magos**: `src/Admin/Export/ExportService.php` shows signs of growing beyond single responsibility — code quality review before extending with bulk operations
+- **Tech-Magos**: `src/Admin/Export/ExportService.php` shows signs of growing beyond single responsibility — code quality review before extending with bulk operations
 
 **Assessment Notes**:
 - Territory Charted: -10 (ambiguous AC), -8 (one failed test unresolved)

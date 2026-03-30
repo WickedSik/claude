@@ -42,7 +42,7 @@ Warhammer 40K themed agent suite for specialized development tasks with Imperial
 
 **Specialist Agents:**
 - Sister Famulous (Orders Famulous) - Architecture & dependency governance
-- Tech-Priest Magos (Adeptus Mechanicus) - Code review & quality inspection
+- Tech-Magos (Adeptus Mechanicus) - Code review & quality inspection
 - Inquisitor - Security & vulnerability analysis
 - Administratum Scribe - Documentation generation
 - Rogue Trader - JIRA expedition & codebase reconnaissance
