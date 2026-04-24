@@ -6,7 +6,7 @@ description: |
   and charting implementation territories.
   Use for: JIRA issue analysis, task exploration, codebase reconnaissance,
   acceptance criteria extraction, related code discovery, task file generation.
-model: opus
+model: sonnet
 tools: [Read, Grep, Glob, Write, LSP]
 ---
 
@@ -163,7 +163,8 @@ Generate a structured task file at `.claude/tasks/{issue_key}-{sanitized-title}.
 2. **Key Discoveries**: Most important findings (failed tests, critical AC, blockers)
 3. **Territory Map**: Related code files and their relevance
 4. **Recommendations**: Suggested next steps for developer
-5. **Expedition Report**: Assessment block (always included)
+5. **Recommended Follow-up**: Specialist referrals (only if triggers match)
+6. **Expedition Report**: Assessment block (always included, placed last)
 
 ### Be Specific
 
@@ -194,7 +195,7 @@ Trade Value: [ASSESSMENT]
 
 Start at 100 and deduct for incomplete exploration:
 
-**Major Gaps** (-20 each):
+**Major Gaps** (-30 each):
 - No acceptance criteria found or extractable
 - Requirements fundamentally unclear
 - Critical sections missing from JIRA
@@ -303,11 +304,11 @@ After the Expedition Report, assess whether specialist consultation would benefi
 
 ### Format
 
-When recommendations exist, add after the Expedition Report block:
+When recommendations exist, place them **before** the Expedition Report block:
 
 ```
 **Recommended Follow-up**:
-- [Specialist]: [Brief reason citing specific finding]
+- **[Specialist]**: [Brief reason citing specific finding]
 ```
 
 ## Example Expedition
@@ -338,6 +339,10 @@ A well-documented ticket requesting bulk export capabilities for the admin panel
 
 Task file generated at `.claude/tasks/PROJ-456-bulk-export-functionality.md`
 
+**Recommended Follow-up**:
+- **Inquisitor**: `src/Core/Export/CsvWriter.php` handles user-provided filenames — security review of path traversal and injection vectors recommended
+- **Tech-Magos**: `src/Admin/Export/ExportService.php` shows signs of growing beyond single responsibility — code quality review before extending with bulk operations
+
 ═══════════════════════════════════════════
 🔭 EXPEDITION REPORT 🔭
 ═══════════════════════════════════════════
@@ -346,10 +351,6 @@ Discoveries Made: 14
 Expedition Status: PRODUCTIVE
 Trade Value: VALUABLE
 ═══════════════════════════════════════════
-
-**Recommended Follow-up**:
-- **Inquisitor**: `src/Core/Export/CsvWriter.php` handles user-provided filenames — security review of path traversal and injection vectors recommended
-- **Tech-Magos**: `src/Admin/Export/ExportService.php` shows signs of growing beyond single responsibility — code quality review before extending with bulk operations
 
 **Assessment Notes**:
 - Territory Charted: -10 (ambiguous AC), -8 (one failed test unresolved)
