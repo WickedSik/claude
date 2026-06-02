@@ -98,20 +98,20 @@ Generate a structured task file at `.claude/tasks/{issue_key}-{sanitized-title}.
 - Truncate to reasonable length (50 chars max for title portion)
 
 **Formatting Requirements**:
-- Metadata block: Each field ends with 2 trailing spaces for markdown line breaks
+- Metadata block: YAML frontmatter delimited by `---` lines, with fields in order: `title`, `issue`, `status`, `assignee`, `reporter`, `priority`. Quote values containing colons or special characters
 - Code blocks: Use appropriate language identifiers
 - File paths: Use backticks with brief relevance descriptions
 - Numbered lists: Preserve hierarchy from JIRA
 
 **Task File Structure**:
 ```markdown
-# [{issue_key}] {Summary}
-
-**Status**: {status}
-**Priority**: {priority}
-**Assignee**: {assignee}
-**Reporter**: {reporter}
-
+---
+title: {Summary}
+issue: {issue_key}
+status: {status}
+assignee: {assignee}
+reporter: {reporter}
+priority: {priority}
 ---
 
 ## Failed Tests
