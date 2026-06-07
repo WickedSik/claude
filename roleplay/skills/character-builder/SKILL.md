@@ -21,6 +21,9 @@ Interactive character creation for roleplay AI characters. This skill is your cr
 - Quick character tweaks or simple adjustments
 - Technical file manipulation only
 
+**File I/O boundary:**
+This skill never reads or writes files directly. It produces character content; all filesystem operations are delegated to the Character File Operations (`character-file`) skill.
+
 **What makes this different:**
 This is a **creative partner** for character development, not a form to fill out. It guides you through progressive phases with warm mentorship, collaborative brainstorming, and creative suggestions. The goal is to create characters that feel real, sound unique, and give you rich stories to explore in roleplay.
 
@@ -35,6 +38,8 @@ Character creation happens in six natural phases:
 4. **Voice** - Create distinctive speech patterns and mannerisms
 5. **Backstory** - Establish their world, history, and current situation
 6. **Validation** - Ensure coherence and identify creative opportunities
+
+An optional **Lorebook** step (Phase 5.5) sits between Backstory and Validation, capturing keyword-triggered world and character anchors for characters whose setting has recurring places, factions, objects, or relationships worth injecting on demand.
 
 Each phase builds on the previous ones. You can be as detailed or as loose as you like—we'll fill in the gaps together.
 
@@ -59,10 +64,11 @@ At each phase, the skill offers:
 **Note on Character Limits:** Character files have length constraints. The skill will guide you to stay within limits and provide character counts during creation:
 - Name: <100 chars
 - Introduction: <80 chars
-- Personality: <3,300 chars
-- Scenario: <1,500 chars
+- Personality: <4,000 chars
+- Scenario: <1,800 chars
 - Example dialogs: <2,200 chars
-- First message: <1,600 chars
+- First message: <1,800 chars
+- Lorebook: <10,000 chars (optional section)
 
 ### Phase 1: Core Concept & Archetype
 
@@ -230,7 +236,7 @@ At each phase, the skill offers:
 
 **Purpose:** Build psychological complexity—the contradictions that make characters feel real.
 
-**Character budget:** 3,300 characters maximum for Personality section
+**Character budget:** 4,000 characters maximum for Personality section
 
 **Questions to explore:**
 - What drives them? What are their core personality traits?
@@ -393,8 +399,8 @@ At each phase, the skill offers:
 **Purpose:** Establish your character's world—where they came from, where they are now.
 
 **Character budgets:**
-- Scenario section: 1,500 characters maximum
-- First message section: 1,600 characters maximum
+- Scenario section: 1,800 characters maximum
+- First message section: 1,800 characters maximum
 
 **Questions to explore:**
 - What shaped them into who they are? What's their story?
@@ -491,6 +497,41 @@ At each phase, the skill offers:
 
 ---
 
+### Phase 5.5: Lorebook — World & Character Anchors *(optional)*
+
+**Purpose:** Capture facts the LLM should recall *only when relevant*—places, factions, named objects, lineages, history, key relationships—and inject them by keyword. Skip this phase for simple characters whose world needs no on-demand context.
+
+**Character budget:** 10,000 characters maximum for the Lorebook section.
+
+**First, understand how a lorebook actually fires:**
+
+A lorebook is a pure string-trigger → text-injection mechanism. The system scans the last 4 messages (2 user + 2 character) for your trigger terms (case-insensitive, partial match). On a hit, it drops your description into the prompt **once, with no framing**—the LLM is never told *why* the text appeared or *which* term triggered it. It guarantees the text shows up; it guarantees nothing about whether the text makes sense on its own. Lore entries do **not** trigger other lore entries.
+
+**That mechanism creates four traps. Author against them:**
+
+1. **Anchor every description.** It arrives decontextualized, so it must stand alone. Restate the subject; no dangling pronouns.
+   - ❌ `harpoon | She keeps them meticulously clean — sloppy kills leave evidence.` *("She"/"them" resolve to nothing.)*
+   - ✅ `harpoon, arm blades, armblades | Rayne's weapons: paired Carpathian arm-blades folded into her gauntlets, plus a harpoon. She keeps them meticulously clean — sloppy kills leave evidence.` *(subject named, trigger terms echoed in the text.)*
+2. **Echo your trigger terms in the description** so the injected text anchors to what summoned it and keeps re-triggering as the term recurs in conversation.
+3. **No dead-end references.** Because lore can't cascade, any proper noun you lean on needs its own entry or an inline explanation. If "Carpathian" matters on its own, give it an entry—don't assume the weapons entry covers it.
+4. **Put persistent facts elsewhere.** Lore unloads once its term leaves the recent window. Core, always-true traits belong in Personality/System Prompt. Reserve lore for context that's only relevant when its subject comes up.
+
+**Questions to explore:**
+- Which entities recur in this character's world—places, groups, objects, people?
+- What would the LLM *not* know from the other sections, but need when a topic surfaces?
+- For each entry: what words would a user or the LLM actually type to mean this? (Include natural variants and likely misspellings, e.g. `arm blades`/`armblades`.)
+- Are any terms so short or common they'd fire on unrelated words? (Partial matching means "art" matches "smart"—choose distinctive terms.)
+
+**Term selection craft:**
+- Lowercase terms for consistency.
+- Maximum ~10 terms per entry for maintainability.
+- Include the synonyms, variants, and misspellings users and the LLM actually type.
+- Avoid terms short or common enough to cause false-positive injections.
+
+**What to capture:** A list of entries, each `terms | description`, every one checked against the four traps above. Focus here on *what each entry says and whether it stands alone*—the exact syntax (pipe delimiter) and length validation are handled at write time by the Character File Operations skill.
+
+---
+
 ### Phase 6: Validation & Polish
 
 **Purpose:** Ensure your character is coherent, consistent, compelling, and within character limits.
@@ -500,10 +541,11 @@ At each phase, the skill offers:
 Before finalizing, verify all sections are within constraints:
 - Character name: <100 characters
 - Introduction: <80 characters
-- Personality section: <3,300 characters
-- Scenario section: <1,500 characters
+- Personality section: <4,000 characters
+- Scenario section: <1,800 characters
 - Example dialogs section: <2,200 characters
-- First message section: <1,600 characters
+- First message section: <1,800 characters
+- Lorebook section: <10,000 characters (if present)
 
 If any section exceeds limits, offer trimming suggestions while preserving essential character elements.
 
@@ -536,6 +578,15 @@ If any section exceeds limits, offer trimming suggestions while preserving essen
 - Illogical: Highly educated but can't read/write
 - Inconsistent: Personality shifts without explanation
 - Unearned: Extreme trait without backstory support
+
+**5. Lorebook Coherence (if present)**
+
+These checks are about *meaning*, not syntax (pipe-delimiter and length validation happen at write time in Character File Operations):
+- Does each description stand alone, with no unresolved pronouns?
+- Does each description echo at least one of its trigger terms?
+- Does any proper noun a description depends on have its own entry or an inline explanation? (Lore can't cascade.)
+- Is any "lore" entry really an always-true fact that belongs in Personality/System Prompt instead?
+- Are any trigger terms short or common enough to cause false-positive injections?
 
 **Validation Questions:**
 
@@ -604,7 +655,7 @@ If any section exceeds limits, offer trimming suggestions while preserving essen
 
 ### Output Format
 
-Once character creation is complete, the skill formats all gathered information into the `.character` file structure:
+Once character creation is complete, character-builder assembles all gathered information into the `.character` content structure below. This is *content only* — writing it to disk is performed by `character-file` (see Handoff Protocol).
 
 ```
 --- // Introduction
@@ -643,6 +694,11 @@ Scene: [Opening scenario where {{char}} meets {{user}}, establishing context]
 --- // System Prompt
 
 You are {{char}}. You will never respond as/for {{user}}. Maintain consistent personality: [key traits and contradictions]. Actions and thoughts go in asterisks. Speech goes in quotes. [Any special instructions: voice quirks, emotional range, boundaries, thematic focus]
+
+--- // Lorebook
+
+[Optional. Include only if Phase 5.5 produced entries. One entry per line, each: lowercase trigger terms (comma-separated) | self-contained description that echoes its terms. Omit this whole section if there are no entries.]
+[term, variant, misspelling | Description that names its subject and stands alone, since it is injected with no framing.]
 ```
 
 ### Handoff Protocol
@@ -657,9 +713,10 @@ After completing all phases and validation, present summary:
 **Character:** [Name] ([X]/100 chars)
 **Introduction:** [Tagline] ([Y]/80 chars)
 **Concept:** [One-line hook capturing essence]
-**Personality:** [3 core traits + key contradiction] ([Z]/3,300 chars)
+**Personality:** [3 core traits + key contradiction] ([Z]/4,000 chars)
 **Voice:** [Speech pattern summary]
-**Setting:** [Scenario context] ([W]/1,500 chars)
+**Setting:** [Scenario context] ([W]/1,800 chars)
+**Lorebook:** [N entries / none] ([V]/10,000 chars, if present)
 
 Character Limits Status:
 ✓ All sections within limits
@@ -670,11 +727,15 @@ unique voice / interesting tension with {{user}} / etc.]
 Ready to create the .character file?"
 ```
 
-**If yes:** Generate complete `.character` file content following format above
+**If yes — delegate the write:**
+1. Assemble the complete `.character` content per the Output Format above. **Do not write it yourself.**
+2. Confirm the target path with the user (default location noted in `character-file`).
+3. **Invoke the Character File Operations (`character-file`) skill** to perform the write, passing the assembled content and the path.
+4. Let `character-file` run its format and character-limit validation as the final gate. Surface any warnings it returns before confirming success to the user.
 
 **If adjustments needed:** Return to specific phase for refinement, then re-present
 
-**File location:** User specifies path for the `.character` file
+**Boundary:** character-builder performs no direct file I/O. If the user later wants edits, that too routes through `character-file`.
 
 ---
 
@@ -817,10 +878,10 @@ I love how her cybernetic eye glowing during hacks gives visual tells to her foc
 Character Limits Check:
 ✓ Name: 'Kira Thorne' (11/100 chars)
 ✓ Introduction: 'Cynical hacker with a heart of gold hiding from corporate hunters' (70/80 chars)
-✓ Personality section: 2,847/3,300 chars
-✓ Scenario section: 1,203/1,500 chars
+✓ Personality section: 2,847/4,000 chars
+✓ Scenario section: 1,203/1,800 chars
 ✓ Example dialogs: 1,987/2,200 chars
-✓ First message: 1,421/1,600 chars
+✓ First message: 1,421/1,800 chars
 
 All sections within limits!
 
@@ -835,9 +896,9 @@ What do you think? Ready to finalize, or want to adjust anything?"
 **Character:** Kira Thorne (11/100 chars)
 **Introduction:** Cynical hacker with a heart of gold hiding from corporate hunters (70/80 chars)
 **Concept:** Street hacker with trust issues helping underdogs
-**Personality:** Cynical + compassionate, skilled + socially awkward, rebellious + loyal (2,847/3,300 chars)
+**Personality:** Cynical + compassionate, skilled + socially awkward, rebellious + loyal (2,847/4,000 chars)
 **Voice:** Casual/street smart with sarcastic deflection, softens for genuine need
-**Setting:** Dystopian megacity, {{user}} is client needing help (1,203/1,500 chars)
+**Setting:** Dystopian megacity, {{user}} is client needing help (1,203/1,800 chars)
 
 Character Limits Status: ✓ All sections within limits
 
@@ -851,11 +912,12 @@ Shall I create the .character file?"
 
 - **File location:** User specifies save location for `.character` file
 - **Character file format:** Follows standard `.character` specification (see Character File Operations skill)
-- **Character limits:** All sections must adhere to length constraints (name <100, introduction <80, personality <3,300, scenario <1,500, example dialogs <2,200, first message <1,600 characters)
+- **Character limits:** All sections must adhere to length constraints (name <100, introduction <80, personality <4,000, scenario <1,800, example dialogs <2,200, first message <1,800, lorebook <10,000 characters)
+- **Lorebook ownership:** character-builder decides lorebook *content and coherence* (which entries, which terms, self-contained descriptions). The Character File Operations skill owns the *format*—pipe-delimiter syntax and length validation—at write time. No syntax rules are duplicated here.
 - **Character counts:** Displayed throughout creation process to help users stay within limits
 - **Validation:** Collaborative, not prescriptive—suggestions, not requirements
 - **Adaptation:** Skill adjusts to user's detail level (minimal concept to extensive backstory)
 - **Tone:** Warm mentorship throughout—honest feedback without hollow praise
-- **Integration:** Designed to work alongside Character File Operations skill for technical file manipulation
+- **Integration (binding):** All file manipulation — writing new files, validating, editing — is delegated to the Character File Operations skill. character-builder never touches the filesystem; its sole output is structured content handed off for writing.
 - **Philosophy:** Character creation should feel collaborative and fun, not formulaic
 - **Trimming guidance:** When sections exceed limits, skill provides suggestions for condensing while preserving character essence
