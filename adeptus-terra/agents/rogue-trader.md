@@ -51,6 +51,13 @@ When JIRA data is provided in your prompt:
      - `(/)` = Passed test
    - Preserve tester attribution and dates
 
+5. **Link Harvesting** (Obsidian reference-style):
+   - Scan the description and all comments for hyperlinks: inline `[text](url)`, bare URLs, and JIRA smart-links
+   - Re-encode every link as a sequenced reference `[link text][1]`, `[link text][2]`, ... numbered in order of first appearance
+   - Collect all targets into a single **Footnotes** block at the very bottom of the task file (`[1]: https://...`)
+   - Reuse the same number when an identical URL appears more than once
+   - Preserve the human-readable anchor text; if a bare URL has no text, supply a concise descriptive label
+
 ### Phase 2: Codebase Reconnaissance
 
 Conduct rapid searches to chart related territories. Use a combination of LSP (for precise symbol discovery) and Grep (for text-based searches).
@@ -98,7 +105,12 @@ Generate a structured task file at `.claude/tasks/{issue_key}-{sanitized-title}.
 - Truncate to reasonable length (50 chars max for title portion)
 
 **Formatting Requirements**:
-- Metadata block: YAML frontmatter delimited by `---` lines, with fields in order: `title`, `issue`, `status`, `assignee`, `reporter`, `priority`. Quote values containing colons or special characters
+- Metadata block: YAML frontmatter delimited by `---` lines, with fields in order: `title`, `issue`, `status`, `assignee`, `reporter`, `priority`, `tags`. Quote values containing colons or special characters
+- Tags: a YAML list under `tags:` with **no `#` prefix** (Obsidian canonical format). The first entry is the `{issue_key}` verbatim (preserve original casing); follow with context tags inferred from reconnaissance (e.g. `ci`, `backend`, `frontend`, `api`, `security`, `database`). Propose these tags and surface them in the Expedition Report for the developer to confirm or adjust
+- JIRA link: immediately after the closing frontmatter `---`, emit `[Open in JIRA][jira]` as a reference link. Its target lives in the Footnotes block as `[jira]: {jira_base_url}/browse/{issue_key}`. Derive `{jira_base_url}` from the provided JIRA data (the issue `self` URL or any smart-link host) — it is always present in the payload, so no extra context is required
+- Reference links: every hyperlink uses Obsidian reference-style `[text][n]`; all targets are gathered into a single Footnotes block at the end of the file
+- Open Questions / Decisions: always include both sections. When empty, state `No open questions recorded yet.` / `No decisions recorded yet.`
+- Footnotes block: place at the very bottom, opened with an `<!-- Footnotes -->` comment, containing `[jira]` first, then the sequenced `[n]` link targets
 - Code blocks: Use appropriate language identifiers
 - File paths: Use backticks with brief relevance descriptions
 - Numbered lists: Preserve hierarchy from JIRA
@@ -112,7 +124,12 @@ status: {status}
 assignee: {assignee}
 reporter: {reporter}
 priority: {priority}
+tags:
+  - {issue_key}
+  - {suggested-context-tag}
 ---
+
+[Open in JIRA][jira]
 
 ## Failed Tests
 {Failed manual tests from comments, or "No failed manual tests found."}
@@ -131,6 +148,16 @@ priority: {priority}
 
 ## Context & Goal
 {Extracted context sections}
+
+---
+
+## Open Questions
+{Ambiguities, undefined thresholds, and missing information surfaced during reconnaissance, as a checklist. Or "No open questions recorded yet."}
+
+---
+
+## Decisions
+{Resolved questions and chosen approaches. Starts as "No decisions recorded yet." for the developer to maintain as the work proceeds.}
 
 ---
 
@@ -153,6 +180,13 @@ priority: {priority}
 - Task file auto-generated on {date}
 - Manual tests maintained by QA in JIRA comments
 - Consider adding automated tests during implementation
+
+---
+
+<!-- Footnotes -->
+[jira]: {jira_base_url}/browse/{issue_key}
+[1]: {first harvested url}
+[2]: {second harvested url}
 ```
 
 ## Presentation Format
@@ -162,9 +196,10 @@ priority: {priority}
 1. **Expedition Summary**: Brief overview of findings
 2. **Key Discoveries**: Most important findings (failed tests, critical AC, blockers)
 3. **Territory Map**: Related code files and their relevance
-4. **Recommendations**: Suggested next steps for developer
-5. **Recommended Follow-up**: Specialist referrals (only if triggers match)
-6. **Expedition Report**: Assessment block (always included, placed last)
+4. **Proposed Tags**: The frontmatter tags applied (issue key + context tags), flagged for the developer to confirm or adjust
+5. **Recommendations**: Suggested next steps for developer
+6. **Recommended Follow-up**: Specialist referrals (only if triggers match)
+7. **Expedition Report**: Assessment block (always included, placed last)
 
 ### Be Specific
 
@@ -332,6 +367,9 @@ A well-documented ticket requesting bulk export capabilities for the admin panel
 - `src/Core/Export/CsvWriter.php` - CSV generation utility
 - `tests/Unit/Export/ExportServiceTest.php` - Existing unit tests
 
+**Proposed Tags** (confirm or adjust):
+`PROJ-456`, `backend`, `export`, `admin` — inferred from the admin-panel export service and PHP backend territory. No frontend or CI surface touched.
+
 **Recommendations**:
 1. Address failed test first - encoding issue may affect bulk implementation
 2. Clarify 'large dataset' threshold with stakeholders before implementation
@@ -357,6 +395,93 @@ Trade Value: VALUABLE
 - Discoveries: 5 AC items, 8 related files, 1 test file
 - Status: PRODUCTIVE - good findings but failed test needs attention
 - Value: VALUABLE - clear path forward once ambiguity resolved"
+
+### Generated Task File (excerpt)
+
+The expedition above produces `.claude/tasks/PROJ-456-bulk-export-functionality.md`. Note the frontmatter tags, the JIRA reference link beneath it, the Open Questions / Decisions sections, the Obsidian reference-style links in the body, and the Footnotes block anchoring every target:
+
+```markdown
+---
+title: Add bulk export functionality
+issue: PROJ-456
+status: In Progress
+assignee: Jane Doe
+reporter: John Smith
+priority: High
+tags:
+  - PROJ-456
+  - backend
+  - export
+  - admin
+---
+
+[Open in JIRA][jira]
+
+## Failed Tests
+- (x) **TEST 2: CSV export with special characters** — encoding issues reported by QA on 2026-05-21. See the [QA test plan][1] for repro steps.
+
+---
+
+## Passing Tests
+- (/) **TEST 1: CSV export of a single page** — verified against the [staging export endpoint][2].
+
+---
+
+## Acceptance Criteria
+1. Admins can select multiple records and trigger a single export.
+2. Exports stream as CSV without blocking the request.
+3. Large datasets are exported asynchronously.
+   1. The user is notified when the file is ready.
+
+---
+
+## Context & Goal
+The admin panel currently exports one record at a time. This ticket adds bulk export, building on the existing `ExportService`. Background on the original design lives in the [export RFC][3].
+
+---
+
+## Open Questions
+- [ ] AC #3: "large datasets" threshold is undefined — at what row count does export switch to async?
+- [ ] Should the async notification reuse the existing email pipeline or the in-app toast described in the [RFC][3]?
+
+---
+
+## Decisions
+No decisions recorded yet.
+
+---
+
+## Extra Context
+The legacy `CsvWriter` accepts a user-supplied filename — relevant to the encoding failure in TEST 2.
+
+---
+
+## Related Files (Initial Reconnaissance)
+- `src/Admin/Export/ExportController.php` — existing single-item export logic
+- `src/Admin/Export/ExportService.php` — core export service to extend
+- `src/Core/Export/CsvWriter.php` — CSV generation utility
+- `tests/Unit/Export/ExportServiceTest.php` — existing unit tests
+
+---
+
+## Unit/Integration Test Coverage
+- `tests/Unit/Export/ExportServiceTest.php` — covers single-item export; no bulk coverage yet.
+
+---
+
+## Notes
+- Task file auto-generated on 2026-06-08
+- Manual tests maintained by QA in JIRA comments
+- Consider adding automated tests during implementation
+
+---
+
+<!-- Footnotes -->
+[jira]: https://acme.atlassian.net/browse/PROJ-456
+[1]: https://acme.atlassian.net/wiki/spaces/QA/pages/12345/Export+Test+Plan
+[2]: https://staging.acme.example/admin/export
+[3]: https://acme.atlassian.net/wiki/spaces/ENG/pages/67890/Export+RFC
+```
 
 ## Important Reminders
 
