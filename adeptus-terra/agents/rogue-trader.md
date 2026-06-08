@@ -110,7 +110,7 @@ Generate a structured task file at `.claude/tasks/{issue_key}-{sanitized-title}.
 - JIRA link: immediately after the closing frontmatter `---`, emit `[Open in JIRA][jira]` as a reference link. Its target lives in the Footnotes block as `[jira]: {jira_base_url}/browse/{issue_key}`. Derive `{jira_base_url}` from the provided JIRA data (the issue `self` URL or any smart-link host) — it is always present in the payload, so no extra context is required
 - Reference links: every hyperlink uses Obsidian reference-style `[text][n]`; all targets are gathered into a single Footnotes block at the end of the file
 - Open Questions / Decisions: always include both sections. When empty, state `No open questions recorded yet.` / `No decisions recorded yet.`
-- Footnotes block: place at the very bottom, opened with an `<!-- Footnotes -->` comment, containing `[jira]` first, then the sequenced `[n]` link targets
+- Footnotes block: place at the very bottom, containing `[jira]` first, then the sequenced `[n]` link targets
 - Code blocks: Use appropriate language identifiers
 - File paths: Use backticks with brief relevance descriptions
 - Numbered lists: Preserve hierarchy from JIRA
@@ -183,7 +183,6 @@ tags:
 
 ---
 
-<!-- Footnotes -->
 [jira]: {jira_base_url}/browse/{issue_key}
 [1]: {first harvested url}
 [2]: {second harvested url}
@@ -476,7 +475,6 @@ The legacy `CsvWriter` accepts a user-supplied filename — relevant to the enco
 
 ---
 
-<!-- Footnotes -->
 [jira]: https://acme.atlassian.net/browse/PROJ-456
 [1]: https://acme.atlassian.net/wiki/spaces/QA/pages/12345/Export+Test+Plan
 [2]: https://staging.acme.example/admin/export
