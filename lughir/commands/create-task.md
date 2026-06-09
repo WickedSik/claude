@@ -87,8 +87,10 @@ Create a markdown file at `.claude/tasks/{sanitized-title}.md` following the tem
 
 ### Formatting Guidelines
 
-- **Markdown newlines**: Use 2 trailing spaces at the end of a line to create a line break in rendered markdown
-- **Status/Priority block**: Each field MUST end with 2 spaces before the newline for proper rendering
+- **Frontmatter**: Emit YAML frontmatter delimited by `---` lines, with fields in order: `title`, `status`, `type`, `priority`, `created`, `tags`. Quote any value containing a colon or special character
+- **Tags**: A YAML list under `tags:` with **no `#` prefix** (Obsidian canonical format). Infer context tags from the task type and any search keywords (e.g. `feature`, `bug`, `backend`, `frontend`, `api`). Surface the proposed tags in the output summary for the developer to confirm or adjust
+- **Reference links**: Every hyperlink uses Obsidian reference-style `[text][n]`, numbered in order of first appearance; gather all targets into a single **Footnotes** block at the very bottom of the file. Reuse the same number for an identical URL. If no links are referenced, omit the Footnotes block
+- **Open Questions / Decisions**: Always include both sections. When empty, seed them with `No open questions recorded yet.` / `No decisions recorded yet.`
 - **Code blocks**: Use appropriate language identifiers for syntax highlighting
 - **Hierarchical lists**: Use proper nesting with 3-space indentation
 
@@ -96,34 +98,46 @@ Create a markdown file at `.claude/tasks/{sanitized-title}.md` following the tem
 
 **IMPORTANT**: Replace all `{placeholders}` with actual data from user input.
 
-**NOTE**: Add 2 trailing spaces after each metadata field value for proper markdown rendering.
-
 ```markdown
-# {Task Title}
-
-**Status**: Not Started
-**Priority**: {Priority}
-**Type**: {Task Type}
-**Created**: {current date YYYY-MM-DD}
-
+---
+title: {Task Title}
+status: Not Started
+type: {Task Type}
+priority: {Priority}
+created: {current date YYYY-MM-DD}
+tags:
+  - {task-type-tag}
+  - {suggested-context-tag}
 ---
 
 ## Acceptance Criteria
 
 {Convert user-provided criteria to numbered list format:}
-{1. First acceptance criterion}
-{2. Second acceptance criterion}
-{   1. Sub-criterion (indented with 3 spaces)}
-{   2. Another sub-criterion}
-{3. Third acceptance criterion}
+1. First acceptance criterion
+2. Second acceptance criterion
+   1. Sub-criterion (indented with 3 spaces)
+   2. Another sub-criterion
+3. Third acceptance criterion
 
 ---
 
 ## Context & Goal
 
-{If user provided context, include it here}
+{If user provided context, include it here. Link any referenced material with reference-style links: see the [design doc][1].}
 
 {If skipped: "No additional context provided."}
+
+---
+
+## Open Questions
+
+{Ambiguities or missing information surfaced during preparation, as a checklist. Or "No open questions recorded yet."}
+
+---
+
+## Decisions
+
+{Resolved questions and chosen approaches. Starts as "No decisions recorded yet." for the developer to maintain as work proceeds.}
 
 ---
 
@@ -136,26 +150,22 @@ Create a markdown file at `.claude/tasks/{sanitized-title}.md` following the tem
 
 ---
 
-## Test Coverage
+## Unit/Integration Test Coverage
 
 {If test files found during search, list them}
 {If none: "No existing test coverage identified. Consider adding tests during implementation."}
 
 ---
 
-## Implementation Notes
+## Notes
 
-- [ ] Review acceptance criteria before starting
-- [ ] Identify dependencies and blockers
-- [ ] Consider test coverage requirements
-- [ ] Update this file as implementation progresses
+- Task file created on {current date YYYY-MM-DD}
+- Update status as work progresses: Not Started → In Progress → Review → Done
 
 ---
 
-## Notes
-
-- Task file created on {current date/time}
-- Update status as work progresses: Not Started → In Progress → Review → Done
+[1]: {first referenced url}
+[2]: {second referenced url}
 ```
 
 ## Output Requirements
@@ -165,6 +175,7 @@ After generating the task file:
 2. Provide a brief summary:
    - Number of acceptance criteria items
    - Number of related files found (or "skipped" if no search)
+   - Proposed tags, flagged for the developer to confirm or adjust
 3. Suggest next steps for the developer
 
 ## Error Handling
@@ -182,6 +193,7 @@ Summary:
 - Acceptance Criteria: 5 items defined
 - Related Files: 3 files found
 - Test Coverage: 1 existing test file identified
+- Proposed Tags: feature, backend, auth (confirm or adjust)
 
 Next Steps:
 1. Review the generated task file
