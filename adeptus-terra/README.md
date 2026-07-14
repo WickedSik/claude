@@ -51,7 +51,19 @@ The Adeptus Terra suite transforms Claude Code into a team of specialized Imperi
 ### `/codify-law` — The Commissar's Lawgiver
 Builds or updates the `.claude/commissar.yml` doctrine manifest (and any local standard files) that the Imperial Commissar enforces. Companion to the Commissar: `/codify-law` **writes** the law, the Commissar **enforces** it.
 
-It prefers **external/shared references** for framework-level standards over per-repo duplication. Detects the framework (e.g. Shopware) and references its canonical guidelines by URL, folds in existing linter configs, and writes local prose **only** for genuine project-specific rules. Across many repos on the same framework, this yields small manifests pointing at one shared source — not copies of the same standards in every repo. See [Doctrine Sourcing](#doctrine-sourcing).
+It prefers **external/shared references** for framework-level standards over per-repo duplication. Detects the framework (e.g. Shopware) and references its canonical guidelines by URL, captures explicit handwritten `rules:`, and writes local prose **only** for genuine project-specific rules. Across many repos on the same framework, this yields small manifests pointing at one shared source — not copies of the same standards in every repo. See [Doctrine Sourcing](#doctrine-sourcing).
+
+### `/survey-law` — The Doctrine Completeness Expedition
+A deep, infrequent audit of whether the codified law actually covers the project. It critically compares the manifest against the conventions the code **actually follows**, finds authoritative external documentation worth referencing (specific sub-pages, not vague "add the docs"), and — only where it genuinely helps — proposes new local standard files against a strict justification bar. It enriches `.claude/commissar.yml` and its referenced files on confirmation, then re-seals. It **never** touches the compiled `.commissar.law.md`.
+
+Run it rarely and deliberately, when you suspect the law has drifted behind the code or a seal reported gaps. Produces a Doctrine Coverage Report with a coverage score and an honest list of residual gaps.
+
+### `/seal-law` — Compile the Sealed Law
+Compiles the manifest into a single cached file, `.claude/.commissar.law.md`, via the bundled `scripts/compile-law.py`: handwritten `rules:` are emitted verbatim, while `language:`/`structure:` sources (URLs and local files) are fetched/read and distilled. The Commissar reads this sealed law as its **Tier 0** authority and never re-fetches URLs at judgement time — resolving the per-judgement `WebFetch` cost.
+
+**The doctrine workflow:** `/codify-law` (set up the manifest) → *occasionally* `/survey-law` (audit and deepen coverage) → `/seal-law` (compile the sealed law). The Commissar then enforces it.
+
+`/codify-law` offers to seal automatically after writing the manifest; run `/seal-law` directly to re-seal whenever the manifest or the external documentation it references changes. Every run recompiles (the script is only invoked deliberately, so there is no cache short-circuit). If the manifest holds only `rules:`, the seal is instant and offline — no `claude` call. The file is generated — committing or ignoring it is the developer's choice.
 
 ## Output Style
 
@@ -64,7 +76,11 @@ adeptus-terra/
 ├── .claude-plugin/
 │   └── plugin.json
 ├── commands/
-│   └── codify-law.md
+│   ├── codify-law.md
+│   ├── survey-law.md
+│   └── seal-law.md
+├── scripts/
+│   └── compile-law.py
 ├── agents/
 │   ├── sister-famulous.md
 │   ├── tech-magos.md
@@ -78,29 +94,32 @@ adeptus-terra/
 
 ## Doctrine Sourcing
 
-The Imperial Commissar ships the **judge**, not the **law**. Coding standards are project- and org-specific and live *outside* this plugin, so the Commissar resolves them at runtime through three tiers (first match wins per domain):
+The Imperial Commissar ships the **judge**, not the **law**. Coding standards are project- and org-specific and live *outside* this plugin, so the Commissar resolves them at runtime.
+
+**Tier 0 — Sealed law (fast path):** if a compiled `.claude/.commissar.law.md` exists (produced by [`/seal-law`](#seal-law--compile-the-sealed-law)), the Commissar reads it as authoritative and skips all runtime fetching. Otherwise it falls through to the three resolution tiers below (first match wins per domain):
 
 1. **Manifest (authoritative)** — a `.claude/commissar.yml` in the target project points to the doctrine by path or URL. It references the law; it never duplicates it:
 
    ```yaml
    doctrine:
+     rules:                                        # explicit handwritten laws — verbatim, highest authority
+       - "Target the project's actual PHP version; never cap at a framework baseline."
      language:                                     # naming / comments / forbidden words / tone
        - ./docs/standards/language.md
        - https://wiki.example.com/coding-standards  # fetched at runtime
      structure:                                    # boundaries / collaboration rules
        - ./docs/standards/architecture.md
-     configs:                                      # linters ARE codified standards
-       - phpstan.neon
-       - .php-cs-fixer.dist.php
    ```
 
-2. **Conventions (fallback)** — no manifest? The Commissar discovers sibling repos (via `.claude/settings.local.json → permissions.additionalDirectories`, mirroring the design-review skill) and scans the project and siblings for `.claude/doctrine/*.md`, `docs/standards/*.md`, `CONTRIBUTING.md`, `.editorconfig`, and linter/formatter configs.
+   `rules` are explicit laws applied verbatim; `language`/`structure` are sources that get distilled. There is **no** `configs` key — tool/linter/formatter configs are enforced by their own tooling and, where they encode judgement, are *quality* (the Tech-Magos's domain), not the Commissar's. The compiler reads the project's version/target files only as reconciliation context, so no distilled law contradicts the code.
+
+2. **Conventions (fallback)** — no manifest? The Commissar discovers sibling repos (via `.claude/settings.local.json → permissions.additionalDirectories`, mirroring the design-review skill) and scans the project and siblings for prose doctrine: `.claude/doctrine/*.md`, `docs/standards/*.md`, `CONTRIBUTING.md`, `CODING_STANDARDS.md`, `STYLE.md`.
 
 3. **Baseline (last resort)** — a thin, universal set of naming, structure, and collaboration principles embedded in the agent. A baseline verdict is explicitly **advisory** and prompts you to codify your standards.
 
 Every judgement reports its **Doctrine Source**, so a censure backed by your own `.claude/commissar.yml` carries authority, while a baseline ruling is advisory only.
 
-To build or update the manifest, run [`/codify-law`](#codify-law--the-commissars-lawgiver). It reconciles existing linter configs and framework standards into references, and only writes local prose for genuine project-specific rules.
+To build or update the manifest, run [`/codify-law`](#codify-law--the-commissars-lawgiver). It references framework and org standards, captures explicit `rules:`, and only writes local prose for genuine project-specific rules.
 
 ## Design Philosophy
 

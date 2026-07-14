@@ -43,9 +43,15 @@ Warhammer 40K themed agent suite for specialized development tasks with Imperial
 **Specialist Agents:**
 - Sister Famulous (Orders Famulous) - Architecture & dependency governance
 - Tech-Magos (Adeptus Mechanicus) - Code review & quality inspection
+- Imperial Commissar (Officio Prefectus) - Coding-doctrine & standards enforcement (conformance, not quality)
 - Inquisitor - Security & vulnerability analysis
 - Administratum Scribe - Documentation generation
 - Rogue Trader - JIRA expedition & codebase reconnaissance
+
+**Slash Commands:**
+- `/adeptus-terra:codify-law` - Build or update the coding-doctrine manifest the Commissar enforces
+- `/adeptus-terra:survey-law` - Audit doctrine completeness and enrich the manifest with missing sources
+- `/adeptus-terra:seal-law` - Compile the doctrine into the Commissar's sealed law file
 
 ### roleplay
 
