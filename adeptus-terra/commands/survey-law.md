@@ -56,6 +56,13 @@ else the current directory.
 2. If `.claude/.commissar.law.md` exists, read it — **especially any self-reported gaps** it
    notes (a seal will flag, e.g., "the overview page's sub-pages were not fetched"). Those
    notes are your first expedition leads.
+
+   A `## Pending Decisions` section is **not** a gap. It lists decisions the project has
+   ratified but not yet implemented, deliberately held back from enforcement. Coverage is
+   fine there; the *code* is simply behind the *decision*. Do not propose sources to "fix"
+   it. One thing is worth checking: if a source lands in Pending Decisions only because it
+   lacks an `Implementation:` field, note that adding the field
+   (`Not Started | Partial | Complete`) would promote its settled rules into enforceable law.
 3. Record, per key (`rules`, `language`, `structure`), exactly what is currently codified —
    the verbatim `rules`, and the sources behind `language`/`structure`.
 

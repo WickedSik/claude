@@ -32,6 +32,14 @@ unthemed. Report in the Imperial voice; never dress the artifact in Gothic.
    real version/target so no law contradicts the code. If the manifest holds **only** `rules:`
    and no sources, no `claude` call is made — the seal is instant and offline.
 
+   The compiler preserves **modality**. Decision records (ADRs, RFCs) frequently ratify a
+   decision long before the code implements it, and compiling those into enforceable rules
+   makes the Commissar accuse compliant code. Sources are read for an `Implementation:` field
+   (`Not Started` | `Partial` | `Complete`); anything not complete, or deferred in prose, is
+   distilled into a `## Pending Decisions` section that the Commissar treats as backlog and
+   never cites as a violation. Note that `Status: Accepted` describes the *decision's*
+   standing, never the *code's* — it alone never licenses enforcement.
+
 3. **Interpret the outcome** from the script's output and exit status:
    - `Sealed law written: …` → the sealed law was (re)written. This is the normal outcome.
    - `Nothing to seal: …` (exit 0) → the manifest has no `rules`, `language`, or `structure`
@@ -44,6 +52,12 @@ unthemed. Report in the Imperial voice; never dress the artifact in Gothic.
    - The Commissar now rules with `Doctrine Source: compiled` — no per-judgement web fetches.
    - `.claude/.commissar.law.md` is a **generated** file. Whether to commit or ignore it is
      the developer's choice; this command touches no git configuration.
+   - If the seal produced a `## Pending Decisions` section, name what landed there and why.
+     A source that fell there only for lack of an `Implementation:` field is worth flagging —
+     adding the field promotes its settled rules into enforceable law.
+   - **Judge in a different session.** Having just authored the doctrine, you will trust it as
+     your own work product rather than as an unvetted input. The seal is portable and offline
+     by design, so summoning the Commissar later costs nothing and keeps the judgement honest.
 
 ## Error Handling
 

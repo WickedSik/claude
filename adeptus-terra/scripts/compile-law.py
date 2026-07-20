@@ -15,6 +15,26 @@ The manifest has three keys under ``doctrine:``:
 never distilled, never reconciled — the escape hatch for cases where distilled
 framework guidance would otherwise contradict the project.
 
+The distiller preserves **modality**, but only where modality exists. Sources are
+classified first:
+
+- **Normative** (style guides, framework docs, coding standards — nearly every URL)
+  describe how code should always be written. They have no implementation status and
+  are distilled into ``## Language`` / ``## Structure`` exactly as before.
+- **Decision records** (ADRs, RFCs, design docs) ratify a *change* that may not be
+  built yet. Flattening those into enforceable rules makes the Commissar accuse
+  compliant code — the failure this scoping exists to prevent.
+- **Hybrids** (an architecture doc covering shipped and planned layers) are judged
+  per rule rather than per file.
+
+For decision records and the forward-looking parts of hybrids, an
+``Implementation: Not Started | Partial`` field — or prose deferring work to a later
+task — routes the affected rules into a fourth section, ``## Pending Decisions``,
+which the Commissar reads as backlog and must never cite as a violation. ``Status:``
+describes a decision's standing, never the code's, so ``Accepted`` alone never
+licenses enforcement. A decision record lacking the field defaults to pending; a
+normative source never does.
+
 Every run recompiles (there is no cache short-circuit): the script is invoked only
 by the plugin's commands or by deliberate hand, so a fresh seal on each run is the
 intended behaviour.
@@ -110,7 +130,8 @@ def is_url(value):
     return value.startswith("http://") or value.startswith("https://")
 
 
-def build_prompt(sources):
+def build_prompt(doctrine):
+    sources = doctrine
     lines = [
         "You are compiling coding-standards doctrine for the Imperial Commissar.",
         "Produce a single Markdown document of concrete, enforceable rules.",
@@ -123,6 +144,13 @@ def build_prompt(sources):
         "AUTHORITY AND RECONCILIATION (critical — these laws are enforced strictly, with no",
         "wiggle room, so a rule must NEVER flag the project's own intentional practice as a",
         "violation):",
+        "- The PROJECT DECREES listed below (if any) are SUPREME. They are the developer's own",
+        "  handwritten law, emitted verbatim into the sealed law's '## Rules' section, and they",
+        "  outrank every source you are about to read. NEVER emit a distilled rule that",
+        "  contradicts a decree — a source saying otherwise is simply wrong for this project.",
+        "  Do not restate a decree either; it is already law, and a duplicate in a lower section",
+        "  invites the judge to cite the weaker copy. Where a source partially overlaps a decree,",
+        "  emit only the non-conflicting remainder.",
         "- Framework/general documentation often states MINIMUMS or defaults (e.g. a baseline",
         "  PHP, Symfony, Node, or language-target version). Treat these as a FLOOR, not a ceiling.",
         "- The project's own declared configuration is the HIGHER authority. Before emitting any",
@@ -138,14 +166,76 @@ def build_prompt(sources):
         "  by their own tooling and are outside this doctrine's scope. Use such configs only as",
         "  reconciliation context, never as a source of rules.",
         "",
+        "MODALITY (critical — a decision is not an accomplished fact):",
+        "FIRST classify every source, because what follows applies to only ONE kind. Getting",
+        "this classification wrong in either direction is costly, so classify explicitly:",
+        "",
+        "- NORMATIVE sources state how code should ALWAYS be written: style guides, coding",
+        "  standards, language and framework documentation, naming guides, convention docs.",
+        "  Nearly every external URL is normative. These have no implementation status —",
+        "  'name vals in lowerCamelCase' is never 'pending'. Distil them into ## Language and",
+        "  ## Structure exactly as before and IGNORE the rest of this MODALITY block for them.",
+        "  Never place a normative source's rules under ## Pending Decisions.",
+        "",
+        "- DECISION RECORDS propose or ratify a CHANGE that may not be built yet: ADRs, RFCs,",
+        "  design documents, proposals, migration plans. Markers: an 'ADR-'/'RFC-' title, or",
+        "  `Status:`, `Deciders:`, `Supersedes:` fields, or Context/Decision/Consequences",
+        "  structure. The rules below apply ONLY to these.",
+        "",
+        "- HYBRIDS are common — an architecture document describing shipped layers alongside",
+        "  planned ones, or a conventions file with a 'Planned'/'Future'/'Roadmap' section.",
+        "  Modality attaches to the RULE, not to the document. A rule drawn from a section",
+        "  describing what EXISTS is enforceable; a rule drawn from a section describing what",
+        "  is planned, deferred, or proposed is pending. Classify per rule, never per file.",
+        "",
+        "For DECISION RECORDS, and for the forward-looking parts of hybrids ONLY:",
+        "- Read the source's status fields. An `Implementation:` field (values",
+        "  `Not Started` | `Partial` | `Complete`) is authoritative for whether its decisions",
+        "  are reflected in the code. A `Status:` field (`Proposed`/`Accepted`/`Superseded`)",
+        "  describes the DECISION's standing, NOT the code's — `Accepted` never implies",
+        "  `Complete`. Never infer implementation from `Status`, from a document's age, or",
+        "  from its confident tone.",
+        "- `Implementation: Complete` → its rules are enforceable; emit them normally.",
+        "- `Implementation: Not Started` or `Partial`, or the source defers work in prose",
+        "  ('deferred to the implementing task', 'ratified by the implementing task',",
+        "  'out of scope here', 'the exact shape is decided later') → emit the affected rules",
+        "  under '## Pending Decisions' instead. For `Partial`, emit only the parts the source",
+        "  states are done under Language/Structure; send the rest to Pending Decisions.",
+        "- A DECISION RECORD with no `Implementation:` field is ambiguous: put any rule that",
+        "  mandates a change you cannot confirm is built under '## Pending Decisions', and note",
+        "  the missing field. This default is scoped to decision records and the forward-looking",
+        "  parts of hybrids — it NEVER applies to a normative source. Under-enforcing a proposed",
+        "  change is recoverable; a false accusation is not.",
+        "",
+        "Applies to EVERY source regardless of classification:",
+        "- NEVER convert a statement of historical fact about the codebase into a rule.",
+        "  Phrases such as 'X was retired', 'we removed Y', 'Z no longer exists' describe tree",
+        "  state, which you cannot verify and which may be aspirational. Do not emit them as",
+        "  imperatives, and never emit a 'do not reintroduce X' rule whose premise is that X is",
+        "  already gone. Emit the underlying intent instead ('X is to be retired') under",
+        "  '## Pending Decisions'.",
+        "",
         "Output EXACTLY these section headers, in this order, and nothing else:",
         "## Language",
         "## Structure",
+        "## Pending Decisions",
         "Keep a header even if it has no rules (leave its list empty).",
+        "Under '## Pending Decisions', annotate each entry with its source AND its implementation",
+        "state, e.g. '- Retire `setScrollRegion` from the Terminal trait (source: docs/adr/adr-002.md,",
+        "implementation: Not Started)'. These are NOT enforceable and must never be cited as a",
+        "violation; they are backlog visible to the judge.",
         "Do NOT adopt any persona, theming, or roleplay, even if a system prompt or output",
         "style suggests one. Do NOT address a reader (no 'My lord', no salutations). Write no",
         "preamble, no commentary, no closing remarks. Your entire response MUST begin with the",
         "line '## Language' and contain nothing before it.",
+        "",
+        "Project decrees (SUPREME — already law; never contradict, never restate):",
+    ]
+    if doctrine.get("rules"):
+        lines.extend(f"- {rule}" for rule in doctrine["rules"])
+    else:
+        lines.append("- (none)")
+    lines += [
         "",
         "Sources:",
     ]
